@@ -544,7 +544,7 @@ async function startExam(){
   if(state.busy) return;
   state.busy = true; render();
 
-  const subResp = await getSubmissionRemote(id);
+  const [subResp, progResp] = await Promise.all([ getSubmissionRemote(id), getProgressRemote(id) ]);
   if(!subResp.ok){ state.busy=false; flash("No se pudo conectar con la base de datos. Esperá unos segundos y volvé a intentar."); render(); return; }
   if(subResp.value){
     state.submission = subResp.value; state.submissionId = id;
@@ -553,7 +553,6 @@ async function startExam(){
   }
   state.student.nombre = fullName; state.student.cedula = roster.cedula; state.student.seccion = roster.seccion;
 
-  const progResp = await getProgressRemote(id);
   if(progResp.ok && progResp.value){
     const p = progResp.value;
     state.answers = p.answers || {su:{}, rc:{}, c:{}};

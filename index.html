@@ -454,10 +454,37 @@ function slug(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300
 function normalizeText(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s\/]/g,"").trim().replace(/\s+/g," "); }
 function normalizeCedula(s){ return (s||"").toUpperCase().replace(/[^0-9A-Z]/g,""); }
 
+/* Mezcla determinista por estudiante: mismo estudiante = mismo orden siempre (persiste al recargar),
+   distinto estudiante = distinto orden, para que no coincida con la persona de al lado. */
+function hashSeed(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) | 0; }
+  return h >>> 0;
+}
+function mulberry32(seed){
+  let a = seed;
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffledIndices(n, seedStr){
+  const rng = mulberry32(hashSeed(seedStr));
+  const idx = Array.from({length:n}, (_,i)=>i);
+  for(let i=idx.length-1;i>0;i--){
+    const j = Math.floor(rng()*(i+1));
+    [idx[i],idx[j]] = [idx[j],idx[i]];
+  }
+  return idx;
+}
+
 const state = {
   screen:"loading",
   config: Object.assign({}, DEFAULT_CONFIG),
   student:{nombre:"", cedula:"", seccion:""},
+  suOrder:null, cOrder:null, rcOrder:null,
   answers:{su:{}, rc:{}, c:{}},
   submissionId:null, submission:null,
   startTime:null, timerHandle:null, timeLeftSec:null,
@@ -470,7 +497,7 @@ let saveTimeout = null;
 function scheduleSaveProgress(){ clearTimeout(saveTimeout); saveTimeout = setTimeout(saveProgress, 700); }
 async function saveProgress(){
   if(state.screen!=="exam" || state.previewMode) return;
-  await saveProgressRemote({ id:state.student.cedula, nombre:state.student.nombre, cedula:state.student.cedula, seccion:state.student.seccion, answers:state.answers, startTime:state.startTime, tabWarnings: state.tabWarnings||0 });
+  await saveProgressRemote({ id:state.student.cedula, nombre:state.student.nombre, cedula:state.student.cedula, seccion:state.student.seccion, answers:state.answers, startTime:state.startTime, tabWarnings: state.tabWarnings||0, suOrder:state.suOrder, cOrder:state.cOrder, rcOrder:state.rcOrder });
 }
 
 /* ---------- calificación automática ---------- */
@@ -517,6 +544,15 @@ function registerTabWarning(reason){
   scheduleSaveProgress();
 }
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden) registerTabWarning("cambio de pestaña o ventana"); });
+let blurCheckTimer = null;
+window.addEventListener("blur", ()=>{
+  if(state.screen!=="exam" || state.previewMode) return;
+  clearTimeout(blurCheckTimer);
+  blurCheckTimer = setTimeout(()=>{
+    if(!document.hasFocus()){ registerTabWarning("cambio de ventana o aplicación"); }
+  }, 350);
+});
+window.addEventListener("focus", ()=>{ clearTimeout(blurCheckTimer); });
 document.addEventListener("contextmenu", (e)=>{ if(state.screen==="exam" && !state.previewMode){ e.preventDefault(); registerTabWarning("intento de abrir el menú del clic derecho"); } });
 document.addEventListener("keydown", (e)=>{
   if(state.screen!=="exam" || state.previewMode) return;
@@ -557,8 +593,14 @@ async function startExam(){
     const p = progResp.value;
     state.answers = p.answers || {su:{}, rc:{}, c:{}};
     state.startTime = p.startTime || Date.now();
+    state.suOrder = p.suOrder || null;
+    state.cOrder = p.cOrder || null;
+    state.rcOrder = p.rcOrder || null;
   }
   if(!state.startTime) state.startTime = Date.now();
+  if(!state.suOrder) state.suOrder = shuffledIndices(PART_SU.length, roster.cedula+"-su");
+  if(!state.cOrder) state.cOrder = shuffledIndices(PART_C_STATEMENTS.length, roster.cedula+"-c");
+  if(!state.rcOrder) state.rcOrder = shuffledIndices(PART_RC.length, roster.cedula+"-rc");
 
   state.screen = "exam"; state.tabWarnings = 0; state.busy = false;
   saveProgress(); render(); startTimer();
@@ -587,6 +629,9 @@ function previewExam(){
   state.student = {nombre:"Vista previa (docente)", cedula:"—", seccion:"—"};
   state.answers = {su:{}, rc:{}, c:{}};
   state.startTime = Date.now();
+  state.suOrder = shuffledIndices(PART_SU.length, "vista-previa-su");
+  state.cOrder = shuffledIndices(PART_C_STATEMENTS.length, "vista-previa-c");
+  state.rcOrder = shuffledIndices(PART_RC.length, "vista-previa-rc");
   state.screen = "exam"; render(); startTimer();
 }
 function exitPreview(){ clearInterval(state.timerHandle); state.previewMode = false; loadTeacherSubs().then(()=>{ state.screen = "teacherDashboard"; render(); }); }
@@ -696,6 +741,24 @@ async function toggleEnabled(){
   render();
 }
 function toggleExpand(id){ state.teacherExpanded = state.teacherExpanded===id ? null : id; render(); }
+async function saveGrade(id){
+  if(state.busy) return;
+  const sub = state.teacherSubs.find(s=>s.id===id);
+  if(!sub) return;
+  const clamp = (v, max) => { v = parseFloat(v); if(isNaN(v)) v=0; return Math.max(0, Math.min(max, v)); };
+  const su = clamp(document.getElementById("g-su-"+id).value, 25);
+  const rc = clamp(document.getElementById("g-rc-"+id).value, 15);
+  const c = clamp(document.getElementById("g-c-"+id).value, 10);
+  sub.autoScoreSU = su; sub.autoScoreRC = rc; sub.autoScoreC = c;
+  sub.totalScore = su + rc + c;
+  sub.graded = true;
+  state.busy = true; render();
+  const resp = await saveSubmissionRemote(sub);
+  state.busy = false;
+  if(!resp.ok){ flash("No se pudo guardar el cambio (falló la conexión). Intentá de nuevo en unos segundos."); render(); return; }
+  flash("Calificación actualizada para "+sub.nombre+".");
+  await loadTeacherSubs(); render();
+}
 async function deleteSubmission(id){
   const ok = confirm("¿Eliminar esta entrega? La persona estudiante podrá volver a presentar la prueba.");
   if(!ok) return;
@@ -830,21 +893,29 @@ function renderLanding(){
 }
 
 function renderExam(){
-  const su = PART_SU.map(q=>{
+  const suOrder = state.suOrder || PART_SU.map((_,i)=>i);
+  const su = suOrder.map((qi,pos)=>{
+    const q = PART_SU[qi];
     const opts = q.options.map(([k,label])=>`<label class="option"><input type="radio" name="su-${q.id}" value="${k}" data-action="ans-su" data-id="${q.id}" ${state.answers.su[q.id]===k?"checked":""}/><span class="k">${k})</span> <span>${esc(label)}</span></label>`).join("");
     const codeHtml = q.code ? `<div class="code-box">${q.code.map(l=>esc(l)).join("\n")}</div>` : "";
-    return `<div class="q"><div class="q-text"><span class="q-num">${q.id}.</span>${esc(q.text)}</div>${codeHtml}<div class="options">${opts}</div></div>`;
+    return `<div class="q"><div class="q-text"><span class="q-num">${pos+1}.</span>${esc(q.text)}</div>${codeHtml}<div class="options">${opts}</div></div>`;
   }).join("");
 
-  const rc = PART_RC.map((q,pos)=>{
+  const rcOrder = state.rcOrder || PART_RC.map((_,i)=>i);
+  const rc = rcOrder.map((qi,pos)=>{
+    const q = PART_RC[qi];
     const arr = state.answers.rc[q.id] || [];
     let blanks = "";
     for(let i=0;i<q.max;i++){ blanks += `<div class="blank-item"><span class="blank-num">${i+1})</span><input type="text" class="blank-input" data-action="ans-rc" data-id="${q.id}" data-idx="${i}" value="${esc(arr[i]||"")}" placeholder="Respuesta ${i+1}" /></div>`; }
     return `<div class="q"><div class="q-text"><span class="q-num">${pos+1}.</span>${esc(q.text)} <span class="pts-tag">(${q.max} pts)</span></div><div class="blank-row">${blanks}</div></div>`;
   }).join("");
 
+  const cOrder = state.cOrder || PART_C_STATEMENTS.map((_,i)=>i);
   const colARef = `<div class="colA"><div class="colA-title">Columna A — Conceptos</div><div class="colA-grid">${PART_C_COLA.map(([k,l])=>`<div><strong>${k}.</strong> ${esc(l)}</div>`).join("")}</div></div>`;
-  const cRows = PART_C_STATEMENTS.map((s,idx)=>`<div class="match-row"><div class="txt"><strong>${idx+1}.</strong> ${esc(s.text)}</div><select data-action="ans-c" data-id="${idx}"><option value="">—</option>${PART_C_COLA.map(([k,l])=>`<option value="${k}" ${state.answers.c[idx]===k?"selected":""}>${k} — ${esc(l)}</option>`).join("")}</select></div>`).join("");
+  const cRows = cOrder.map((idx,pos)=>{
+    const s = PART_C_STATEMENTS[idx];
+    return `<div class="match-row"><div class="txt"><strong>${pos+1}.</strong> ${esc(s.text)}</div><select data-action="ans-c" data-id="${idx}"><option value="">—</option>${PART_C_COLA.map(([k,l])=>`<option value="${k}" ${state.answers.c[idx]===k?"selected":""}>${k} — ${esc(l)}</option>`).join("")}</select></div>`;
+  }).join("");
 
   const cheatOverlay = state.showCheatWarning ? `
     <div class="cheat-overlay"><div class="cheat-box">
@@ -870,7 +941,7 @@ function renderExam(){
     </div></div>
     <div class="wrap">
       <div class="section"><div class="section-head"><span class="num">SU</span><h2>Selección Única</h2><span class="pts">25 puntos</span></div>
-        <div class="section-instr">Escriba una equis sobre la opción correcta. 1 punto cada una.</div><div class="section-body">${su}</div></div>
+        <div class="section-instr">Escriba una equis sobre la opción correcta. 1 punto cada una. El orden de las preguntas puede variar entre cada persona estudiante.</div><div class="section-body">${su}</div></div>
 
       <div class="section"><div class="section-head"><span class="num">RC</span><h2>Respuesta Corta</h2><span class="pts">15 puntos</span></div>
         <div class="section-instr">Anote la cantidad de elementos que se le solicita en cada pregunta.</div><div class="section-body">${rc}</div></div>
@@ -1041,10 +1112,21 @@ function renderTeacherDashboard(){
         return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${idx+1}. respondió <strong>${given||"—"}</strong> (correcta: ${st.correct})</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
       }).join("");
       detail = `<tr><td colspan="4"><div class="detail">
-        <h4>SU — detalle (${s.autoScoreSU}/25)</h4>${suList}
-        <h4>RC — detalle, autocalificada (${s.autoScoreRC}/15)</h4>${rcList}
-        <h4>C — detalle (${s.autoScoreC}/10)</h4>${cList}
-        <div style="margin-top:14px;"><button class="btn btn-ghost btn-small" data-action="collapse">Cerrar</button></div>
+        <h4>SU — detalle (auto: ${s.autoScoreSU}/25)</h4>${suList}
+        <h4>RC — detalle, autocalificada (auto: ${s.autoScoreRC}/15)</h4>${rcList}
+        <h4>C — detalle (auto: ${s.autoScoreC}/10)</h4>${cList}
+        <div class="rubric" style="margin-top:14px;">
+          <div class="rubric-title">Ajustar puntos manualmente (por si hay una apelación válida)</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
+            <div>SU (máx. 25): <input type="number" min="0" max="25" step="0.5" class="grade-input" id="g-su-${s.id}" value="${s.autoScoreSU}" /></div>
+            <div>RC (máx. 15): <input type="number" min="0" max="15" step="0.5" class="grade-input" id="g-rc-${s.id}" value="${s.autoScoreRC}" /></div>
+            <div>C (máx. 10): <input type="number" min="0" max="10" step="0.5" class="grade-input" id="g-c-${s.id}" value="${s.autoScoreC}" /></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;">
+          <button class="btn btn-gold btn-small" data-action="save-grade" data-id="${s.id}" ${state.busy?'disabled':''}>${state.busy?'Guardando…':'Guardar cambios'}</button>
+          <button class="btn btn-ghost btn-small" data-action="collapse">Cerrar</button>
+        </div>
       </div></td></tr>`;
     }
     const extras = computeGradeExtras(s.totalScore, c.valorPorcentual);
@@ -1139,6 +1221,7 @@ document.addEventListener("click", (e)=>{
   else if(action==="export-csv") exportCSV();
   else if(action==="expand") toggleExpand(id);
   else if(action==="collapse") toggleExpand(state.teacherExpanded);
+  else if(action==="save-grade") saveGrade(id);
   else if(action==="delete-sub") deleteSubmission(id);
 });
 document.addEventListener("change", (e)=>{
