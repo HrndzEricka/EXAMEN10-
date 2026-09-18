@@ -529,15 +529,11 @@ function answeredCount(){
 const TOTAL_ITEMS = PART_SU.length + PART_C_STATEMENTS.length + PART_RC.reduce((s,q)=>s+q.max,0);
 
 
-function init(){
+async function init(){
   if(!backendConfigured()){ state.screen = "backendMissing"; render(); return; }
+  const cfg = await getConfigRemote();
+  if(cfg.ok && cfg.value){ state.config = Object.assign({}, DEFAULT_CONFIG, cfg.value); }
   state.screen = "landing"; render();
-  getConfigRemote().then(cfg=>{
-    if(cfg.ok && cfg.value){
-      state.config = Object.assign({}, DEFAULT_CONFIG, cfg.value);
-      if(state.screen==="landing") render();
-    }
-  });
 }
 
 function registerTabWarning(reason){
@@ -751,15 +747,10 @@ async function saveGrade(id){
   if(!sub) return;
   const clamp = (v, max) => { v = parseFloat(v); if(isNaN(v)) v=0; return Math.max(0, Math.min(max, v)); };
   const su = clamp(document.getElementById("g-su-"+id).value, 25);
+  const rc = clamp(document.getElementById("g-rc-"+id).value, 15);
   const c = clamp(document.getElementById("g-c-"+id).value, 10);
-  let rcTotal = 0; const rcScores = {};
-  PART_RC.forEach(q=>{
-    const el = document.getElementById("g-rc-"+id+"-"+q.id);
-    const v = clamp(el.value, q.max);
-    rcScores[q.id] = v; rcTotal += v;
-  });
-  sub.autoScoreSU = su; sub.autoScoreRC = rcTotal; sub.autoScoreC = c; sub.rcScores = rcScores;
-  sub.totalScore = su + rcTotal + c;
+  sub.autoScoreSU = su; sub.autoScoreRC = rc; sub.autoScoreC = c;
+  sub.totalScore = su + rc + c;
   sub.graded = true;
   state.busy = true; render();
   const resp = await saveSubmissionRemote(sub);
@@ -1114,17 +1105,7 @@ function renderTeacherDashboard(){
       const rcList = PART_RC.map(q=>{
         const arr = s.answers.rc[q.id]||[];
         const lines = Array.from({length:q.max},(_,i)=>`<div>${i+1}) ${esc(arr[i]||"— sin respuesta —")}</div>`).join("");
-        const autoScore = s.rcScores && s.rcScores[q.id]!=null ? s.rcScores[q.id] : 0;
-        return `<div class="a-item">
-          <div class="prompt">${q.id}. ${esc(q.text)} <span class="hint">Referencia: ${esc(q.ref)}</span></div>
-          ${lines}
-          <div style="margin-top:6px;display:flex;align-items:center;gap:6px;">
-            <span>Puntos (máx. ${q.max}):</span>
-            <button type="button" class="btn btn-ghost btn-small" data-action="score-dec" data-target="g-rc-${s.id}-${q.id}" data-max="${q.max}" style="padding:4px 10px;">−</button>
-            <input type="number" min="0" max="${q.max}" step="0.5" class="grade-input" id="g-rc-${s.id}-${q.id}" value="${autoScore}" style="width:56px;text-align:center;" />
-            <button type="button" class="btn btn-ghost btn-small" data-action="score-inc" data-target="g-rc-${s.id}-${q.id}" data-max="${q.max}" style="padding:4px 10px;">+</button>
-          </div>
-        </div>`;
+        return `<div class="a-item"><div class="prompt">${q.id}. ${esc(q.text)} — auto: ${s.rcScores?s.rcScores[q.id]:0}/${q.max}</div>${lines}</div>`;
       }).join("");
       const cList = PART_C_STATEMENTS.map((st,idx)=>{
         const given = s.answers.c[idx]; const ok = given===st.correct;
@@ -1138,6 +1119,7 @@ function renderTeacherDashboard(){
           <div class="rubric-title">Ajustar puntos manualmente (por si hay una apelación válida)</div>
           <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
             <div>SU (máx. 25): <input type="number" min="0" max="25" step="0.5" class="grade-input" id="g-su-${s.id}" value="${s.autoScoreSU}" /></div>
+            <div>RC (máx. 15): <input type="number" min="0" max="15" step="0.5" class="grade-input" id="g-rc-${s.id}" value="${s.autoScoreRC}" /></div>
             <div>C (máx. 10): <input type="number" min="0" max="10" step="0.5" class="grade-input" id="g-c-${s.id}" value="${s.autoScoreC}" /></div>
           </div>
         </div>
@@ -1240,16 +1222,6 @@ document.addEventListener("click", (e)=>{
   else if(action==="expand") toggleExpand(id);
   else if(action==="collapse") toggleExpand(state.teacherExpanded);
   else if(action==="save-grade") saveGrade(id);
-  else if(action==="score-inc" || action==="score-dec"){
-    const el = document.getElementById(t.getAttribute("data-target"));
-    if(el){
-      const max = parseFloat(t.getAttribute("data-max"))||0;
-      let v = parseFloat(el.value); if(isNaN(v)) v=0;
-      v += action==="score-inc" ? 0.5 : -0.5;
-      v = Math.max(0, Math.min(max, Math.round(v*2)/2));
-      el.value = v;
-    }
-  }
   else if(action==="delete-sub") deleteSubmission(id);
 });
 document.addEventListener("change", (e)=>{
