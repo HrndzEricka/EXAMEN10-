@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Prueba Comprensiva — Programación 10°</title>
+<title>Prueba U3 · Aplicación de la robótica — 10°</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
@@ -137,7 +137,8 @@ input,select,textarea{font-family:inherit;font-size:16.5px;}
 .q:last-child{border-bottom:none;}
 .q-text{font-size:16.5px;margin-bottom:18px;white-space:pre-line;line-height:1.6;}
 .q-num{font-family:'IBM Plex Mono';color:var(--navy-2);font-weight:600;margin-right:6px;}
-.options{display:flex;gap:12px;flex-wrap:wrap;}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media (max-width:560px){.options{grid-template-columns:1fr;}}
 .option{
   border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;
   display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--paper);
@@ -272,76 +273,77 @@ table.subs tr:hover td{background:#F1ECDD;}
 
 <script>
 /* ============================================================
-   DATA — Prueba Comprensiva Programación (Python) — 10-2 / 10-3
-   SU 25 + RC 15 + C 10 = 50 puntos
+   DATA — Prueba Unidad 3: Aplicación de la robótica — 10-2 / 10-3
+   SU 20 + RC 20 + C 10 = 50 puntos
+   Fuente única: Antología Unidad 3 y su glosario (MsC. Ericka Hernández Mena)
    ============================================================ */
+const EXAM_ID = "robotica-u3-2026";
+const EXAM_PREFIX = "ROB3-";
 const TEMA_NOMBRES = {
-  tema1:"Programación Interpretada Multiparadigma",
-  tema2:"Listas en Python",
-  tema3:"Control de Flujo y Estructuras de Datos",
-  tema4:"Entrada y Salida de Datos",
-  tema5:"Errores y Excepciones",
-  tema6:"Clases y POO para Desarrollo Web"
+  ra1:"RA1 · Automatización robotizada",
+  ra2:"RA2 · Mecanismos y máquinas",
+  ra3:"RA3 · Máquinas simples y compuestas",
+  ra4:"RA4 · Motores y simuladores",
+  ra5:"RA5 · Tecnologías robóticas",
+  ra6:"RA6 · Robots y retos"
 };
 
 const PART_SU = [
- {id:1, tema:"tema1", text:"Un lenguaje interpretado ejecuta las instrucciones:", code:null, options:[["A","Todas de una vez, tras compilar el programa completo"],["B","Línea por línea, mediante un intérprete"],["C","Solamente al finalizar el programa"]], correct:"B"},
- {id:2, tema:"tema1", text:"¿Cuál de las siguientes NO es uno de los 4 paradigmas de Python vistos en clase?", code:null, options:[["A","Programación imperativa"],["B","Programación orientada a objetos"],["C","Programación concurrente"]], correct:"C"},
- {id:3, tema:"tema1", text:"El símbolo >>> indica que se está trabajando:", code:null, options:[["A","Dentro de un archivo .py"],["B","Directamente en el intérprete de Python"],["C","Dentro de un depurador (debugger)"]], correct:"B"},
- {id:4, tema:"tema1", text:"¿Cuál entorno de programación es ideal para ciencia de datos, permitiendo mezclar código y texto?", code:null, options:[["A","IDLE"],["B","PyCharm"],["C","Jupyter Notebook"]], correct:"C"},
- {id:5, tema:"tema1", text:"¿Qué tipo de dato representa un texto encerrado entre comillas?", code:null, options:[["A","int"],["B","str"],["C","float"]], correct:"B"},
- {id:6, tema:"tema2", text:"Analice el siguiente código. ¿Qué imprime?", code:["mi_lista = [10, 20, 30, 40]","print(mi_lista[-2])"], options:[["A","20"],["B","30"],["C","40"]], correct:"B"},
- {id:7, tema:"tema2", text:"Analice el siguiente código. ¿Qué imprime?", code:["numeros = [3, 1, 2]","numeros.append(5)","numeros.sort()","print(numeros)"], options:[["A","[1, 2, 3, 5]"],["B","[3, 1, 2, 5]"],["C","[5, 3, 1, 2]"]], correct:"A"},
- {id:8, tema:"tema2", text:"¿Cuál es la principal diferencia entre una lista y una tupla?", code:null, options:[["A","La lista es inmutable y la tupla no"],["B","La lista es mutable y la tupla es inmutable"],["C","Ambas son inmutables"]], correct:"B"},
- {id:9, tema:"tema2", text:"¿Cómo se le llama a la forma de crear una lista en una sola línea, combinando un bucle y opcionalmente una condición?", code:null, options:[["A","Lista por comprensión"],["B","Lista anidada"],["C","Lista dinámica"]], correct:"A"},
- {id:10, tema:"tema3", text:"Analice el siguiente código. ¿Qué imprime?", code:["for i in range(5):","    if i == 2:","        break","    print(i)"], options:[["A","0  1"],["B","0  1  2"],["C","0  1  2  3  4"]], correct:"A"},
- {id:11, tema:"tema3", text:"Analice el siguiente código. ¿Qué imprime?", code:["for i in range(4):","    if i == 1:","        continue","    print(i)"], options:[["A","0  2  3"],["B","0  1  2  3"],["C","1  2  3"]], correct:"A"},
- {id:12, tema:"tema3", text:"¿Cuál estructura de datos sigue el principio FIFO (primero en entrar, primero en salir)?", code:null, options:[["A","Pila"],["B","Cola"],["C","Tupla"]], correct:"B"},
- {id:13, tema:"tema3", text:"¿Qué función permite recorrer dos o más secuencias en paralelo?", code:null, options:[["A","enumerate()"],["B","zip()"],["C","range()"]], correct:"B"},
- {id:14, tema:"tema3", text:"¿Qué archivo le indica a Python que una carpeta es un paquete?", code:null, options:[["A","main.py"],["B","__init__.py"],["C","config.py"]], correct:"B"},
- {id:15, tema:"tema4", text:"Analice el siguiente código. Si el usuario escribe 5, ¿qué tipo de dato imprime?", code:["numero = input(\"Ingresa un número: \")","print(type(numero))"], options:[["A","int"],["B","str"],["C","float"]], correct:"B"},
- {id:16, tema:"tema4", text:"¿Cuál modo de apertura de un archivo con open() borra el contenido previo?", code:null, options:[["A",'"r"'],["B",'"a"'],["C",'"w"']], correct:"C"},
- {id:17, tema:"tema4", text:"¿Qué módulo de Python se utiliza para guardar datos estructurados como diccionarios?", code:null, options:[["A","os"],["B","json"],["C","sys"]], correct:"B"},
- {id:18, tema:"tema4", text:"¿Cuál es la forma recomendada de abrir un archivo para que se cierre automáticamente?", code:null, options:[["A","open() sin más instrucciones"],["B","with open() as archivo"],["C","file.new()"]], correct:"B"},
- {id:19, tema:"tema4", text:"Analice el siguiente código. ¿Qué imprime?", code:["nombre = \"Ana\"","edad = 20","print(f\"{nombre} tiene {edad} años\")"], options:[["A","Ana tiene 20 años"],["B","nombre tiene edad años"],["C","{nombre} tiene {edad} años"]], correct:"A"},
- {id:20, tema:"tema5", text:"Analice el siguiente código. ¿Qué imprime?", code:["try:","    numero = int(\"abc\")","except ValueError:","    print(\"Error\")"], options:[["A","abc"],["B","Error"],["C","No imprime nada"]], correct:"B"},
- {id:21, tema:"tema5", text:"¿Qué palabra clave se utiliza para generar una excepción de forma manual?", code:null, options:[["A","raise"],["B","throw"],["C","error"]], correct:"A"},
- {id:22, tema:"tema6", text:"Analice el siguiente código. ¿Qué imprime?", code:["class Perro:","    def __init__(self, nombre):","        self.nombre = nombre","","p = Perro(\"Rex\")","print(p.nombre)"], options:[["A","Perro"],["B","Rex"],["C","nombre"]], correct:"B"},
- {id:23, tema:"tema6", text:"¿Qué método especial se ejecuta automáticamente al crear una instancia de una clase?", code:null, options:[["A","__init__"],["B","__start__"],["C","__new__"]], correct:"A"},
- {id:24, tema:"tema6", text:"¿Cómo se protege una variable para que sea privada dentro de una clase en Python?", code:null, options:[["A","Escribiéndola en mayúsculas"],["B","Con doble guion bajo (__) antes del nombre"],["C","Con el símbolo $ antes del nombre"]], correct:"B"},
- {id:25, tema:"tema3", text:"Analice el siguiente código. ¿Qué imprime?", code:["edad = 15","if edad >= 18:","    print(\"Mayor\")","elif edad >= 13:","    print(\"Adolescente\")","else:","    print(\"Niño\")"], options:[["A","Mayor"],["B","Adolescente"],["C","Niño"]], correct:"B"}
+ {id:1, tema:"ra1", text:"Dispositivo que recibe la información de los sensores, la procesa y decide qué hacer, como Arduino o un PLC:", code:null, options:[["A","Sensor"],["B","Controlador"],["C","Actuador"],["D","Rodamiento"]], correct:"B"},
+ {id:2, tema:"ra1", text:"La lavadora es ejemplo de un nivel de automatización:", code:null, options:[["A","Manual"],["B","Mecanizado"],["C","Semiautomático"],["D","Automático"]], correct:"C"},
+ {id:3, tema:"ra1", text:"Robot diseñado para trabajar junto a personas, que se detiene si alguien se acerca:", code:null, options:[["A","Cobot"],["B","AGV"],["C","PLC"],["D","HMI"]], correct:"A"},
+ {id:4, tema:"ra1", text:"Lo que define el nivel de automatización de un proceso es:", code:null, options:[["A","La cantidad de motores"],["B","El costo de la máquina"],["C","La velocidad del proceso"],["D","Quién toma las decisiones"]], correct:"D"},
+ {id:5, tema:"ra2", text:"Barra sobre la que giran ruedas, poleas o engranajes y que transmite el giro:", code:null, options:[["A","Leva"],["B","Cremallera"],["C","Eje"],["D","Correa"]], correct:"C"},
+ {id:6, tema:"ra2", text:"Mecanismo que se usa en el portón eléctrico:", code:null, options:[["A","Piñón-cremallera"],["B","Leva"],["C","Biela-manivela"],["D","Cadena y piñón"]], correct:"A"},
+ {id:7, tema:"ra2", text:"Pieza que reduce la fricción entre un eje y su soporte:", code:null, options:[["A","Leva"],["B","Rodamiento"],["C","Correa"],["D","Cremallera"]], correct:"B"},
+ {id:8, tema:"ra2", text:"Mecanismo que lleva el giro entre dos ruedas dentadas separadas sin deslizar, como en la bicicleta:", code:null, options:[["A","Polea con correa"],["B","Piñón-cremallera"],["C","Leva"],["D","Cadena y piñón"]], correct:"D"},
+ {id:9, tema:"ra3", text:"¿Cuál de las siguientes NO es una máquina simple?", code:null, options:[["A","Cuña"],["B","Tornillo"],["C","Polea"],["D","Carretilla"]], correct:"D"},
+ {id:10, tema:"ra3", text:"Una carga de 40 kg está a 0,5 m del punto de apoyo y se empuja a 2 m. La fuerza necesaria es:", code:null, options:[["A","10 kg"],["B","20 kg"],["C","80 kg"],["D","160 kg"]], correct:"A"},
+ {id:11, tema:"ra3", text:"En un acople directo, las piezas:", code:null, options:[["A","Giran en el mismo sentido"],["B","Giran en sentidos opuestos"],["C","No giran"],["D","Necesitan una correa"]], correct:"B"},
+ {id:12, tema:"ra3", text:"Un engranaje conductor de 30 dientes da 2 vueltas y mueve uno conducido de 10 dientes. El conducido da:", code:null, options:[["A","2 vueltas"],["B","3 vueltas"],["C","6 vueltas"],["D","60 vueltas"]], correct:"C"},
+ {id:13, tema:"ra4", text:"Motor potente y duradero, usado en lavadoras, bombas y en la industria:", code:null, options:[["A","Motor AC"],["B","Motor DC"],["C","Paso a paso"],["D","Servomotor"]], correct:"A"},
+ {id:14, tema:"ra4", text:"Motor ideal para impresoras 3D y máquinas CNC por su posición precisa:", code:null, options:[["A","Motor AC"],["B","Motor hidráulico"],["C","Motor neumático"],["D","Paso a paso"]], correct:"D"},
+ {id:15, tema:"ra4", text:"Interruptor que se acciona con una corriente pequeña para controlar un circuito de mayor potencia:", code:null, options:[["A","Final de carrera"],["B","Relé"],["C","Tope"],["D","Leva"]], correct:"B"},
+ {id:16, tema:"ra4", text:"Simulador que además permite programar el sistema, como RoboDK o Factory I/O:", code:null, options:[["A","Simulador eléctrico"],["B","Monitor serie"],["C","Simulador informático"],["D","HMI"]], correct:"C"},
+ {id:17, tema:"ra5", text:"Sensor que mide la cantidad de luz:", code:null, options:[["A","PIR"],["B","Ultrasónico"],["C","Infrarrojo de línea"],["D","LDR"]], correct:"D"},
+ {id:18, tema:"ra5", text:"El controlador no mueve los motores directamente; para eso usa:", code:null, options:[["A","Un driver de motores o un relé"],["B","Un sensor"],["C","Un monitor serie"],["D","Pseudocódigo"]], correct:"A"},
+ {id:19, tema:"ra6", text:"Una aspiradora que esquiva sillas es un robot de nivel:", code:null, options:[["A","1, programado"],["B","2, adaptativo"],["C","3, inteligente"],["D","4, autónomo avanzado"]], correct:"B"},
+ {id:20, tema:"ra6", text:"Un robot logra su tarea en 18 de 24 intentos. ¿Qué porcentaje de éxito tiene?", code:null, options:[["A","18 %"],["B","60 %"],["C","75 %"],["D","80 %"]], correct:"C"}
 ];
 
 const PART_RC = [
- {id:1, tema:"tema1", text:"Anote 2 paradigmas de programación que admite Python.", max:2, ref:"Lista cerrada (4): imperativo, estructurado, orientado a objetos, funcional",
-   sets:[["imperativo","programacion imperativa"],["estructurado","programacion estructurada"],["orientado a objetos","poo","programacion orientada a objetos"],["funcional","programacion funcional"]]},
- {id:2, tema:"tema2", text:"Anote 3 métodos de listas vistos en clase.", max:3, ref:"Lista cerrada: append, insert, remove, pop, sort, reverse",
-   sets:[["append"],["insert"],["remove"],["pop"],["sort"],["reverse"]]},
- {id:3, tema:"tema4", text:"Anote el modo de apertura usado para LEER un archivo, y el modo usado para ESCRIBIR en un archivo borrando su contenido anterior.", max:2, ref:"r = lectura, w = escritura",
-   sets:[["r","lectura"],["w","escritura"]]},
- {id:4, tema:"tema6", text:"Anote 3 conceptos de la programación orientada a objetos vistos en clase.", max:3, ref:"Lista cerrada: clase, instancia/objeto, método, herencia, atributo, variable privada, self, constructor (__init__)",
-   sets:[["clase"],["instancia","objeto"],["metodo"],["herencia"],["atributo","variable de instancia"],["variable privada","encapsulamiento"],["self"],["constructor","init","__init__"]]},
- {id:5, tema:"tema1", text:"Anote 2 tipos de datos básicos de Python vistos en clase.", max:2, ref:"Lista cerrada: int, float, str",
-   sets:[["int"],["float"],["str","cadena","string"]]},
- {id:6, tema:"tema3", text:"Anote 3 elementos de control de flujo vistos en clase.", max:3, ref:"Lista cerrada: if/elif/else, bucle for, range(), break, continue, else (en bucle), pass",
-   sets:[["if","elif","else","if elif else"],["for","bucle for"],["range"],["break"],["continue"],["else en bucle","else del bucle"],["pass"]]}
+ {id:1, tema:"ra1", text:"Nombre las TRES etapas del ciclo de un sistema robotizado.", max:3, ref:"Lista cerrada: Percepción, razonamiento, acción",
+   sets:[["percepcion", "percep"], ["razonamiento", "razona"], ["accion"]]},
+ {id:2, tema:"ra2", text:"Nombre los TRES tipos de movimiento.", max:3, ref:"Lista cerrada: Rotativo, lineal, alternativo",
+   sets:[["rotativo", "rotativ", "rotacion", "rotatorio", "giratorio"], ["lineal", "rectilineo"], ["alternativo", "alternativ"]]},
+ {id:3, tema:"ra2", text:"Escriba las DOS clases de mecanismos según si cambian o no el tipo de movimiento.", max:2, ref:"Lista cerrada: Transmisión, transformación",
+   sets:[["transmision", "transmis"], ["transformacion", "transform"]]},
+ {id:4, tema:"ra3", text:"Escriba las DOS máquinas simples que forman una carretilla.", max:2, ref:"Lista cerrada: Palanca, rueda y eje",
+   sets:[["palanca"], ["rueda y eje", "rueda", "eje"]]},
+ {id:5, tema:"ra4", text:"Nombre los TRES tipos de circuito según cómo se conectan sus receptores.", max:3, ref:"Lista cerrada: Serie, paralelo, mixto",
+   sets:[["serie"], ["paralelo", "paralel"], ["mixto", "mixt"]]},
+ {id:6, tema:"ra5", text:"Escriba los DOS tipos de señal que entregan los sensores.", max:2, ref:"Lista cerrada: Digital, analógica",
+   sets:[["digital"], ["analogica", "analogico", "analog"]]},
+ {id:7, tema:"ra6", text:"Nombre las TRES capas en que se diseña un robot.", max:3, ref:"Lista cerrada: Estructura física, sistema de control, programación",
+   sets:[["estructura fisica", "estructura"], ["sistema de control", "control"], ["programacion", "program"]]},
+ {id:8, tema:"ra6", text:"Escriba los DOS criterios con que se evalúa un robot.", max:2, ref:"Lista cerrada: Efectividad, eficiencia",
+   sets:[["efectividad", "efectiv"], ["eficiencia", "eficien"]]}
 ];
 
 const PART_C_COLA = [
- ["A","Intérprete"],["B","Lista"],["C","Tupla"],["D","Pila"],["E","Cola"],
- ["F","Excepción"],["G","Clase"],["H","Instancia"],["I","Módulo"],["J","Generador"]
+ ["A","Tornillo"],["B","HMI"],["C","Domótica"],["D","Polea"],["E","PLC"],["F","Sistema embebido"],["G","Leva"],["H","IoT"],["I","Visión artificial"],["J","AGV"],["K","Motorreductor"],["L","Inmótica"]
 ];
 const PART_C_STATEMENTS = [
- {text:"Programa que ejecuta el código fuente línea por línea.", correct:"A", tema:"tema1"},
- {text:"Colección ordenada y mutable que puede almacenar varios elementos.", correct:"B", tema:"tema2"},
- {text:"Colección ordenada e inmutable de elementos.", correct:"C", tema:"tema3"},
- {text:"Estructura de datos LIFO: el último en entrar es el primero en salir.", correct:"D", tema:"tema3"},
- {text:"Estructura de datos FIFO: el primero en entrar es el primero en salir.", correct:"E", tema:"tema3"},
- {text:"Error que ocurre durante la ejecución del programa, no antes.", correct:"F", tema:"tema5"},
- {text:"Plantilla utilizada para crear objetos con atributos y métodos.", correct:"G", tema:"tema6"},
- {text:"Objeto específico generado a partir de una clase.", correct:"H", tema:"tema6"},
- {text:"Archivo .py que contiene funciones, variables o clases reutilizables.", correct:"I", tema:"tema3"},
- {text:"Función que produce valores bajo demanda usando la palabra clave yield.", correct:"J", tema:"tema6"}
+ {text:"Vehículo de guiado automático que transporta materiales dentro de una bodega o planta sin conductor.", correct:"J", tema:"ra1"},
+ {text:"Computadora industrial resistente que controla procesos automatizados.", correct:"E", tema:"ra1"},
+ {text:"Pantalla industrial para visualizar, supervisar y configurar un proceso automatizado.", correct:"B", tema:"ra5"},
+ {text:"Conexión de robots, sensores y equipos por internet para intercambiar datos.", correct:"H", tema:"ra5"},
+ {text:"Automatización aplicada al hogar: luces, cerraduras, persianas y electrodomésticos.", correct:"C", tema:"ra6"},
+ {text:"Automatización aplicada a edificios completos: accesos, ascensores, climatización y seguridad.", correct:"L", tema:"ra6"},
+ {text:"Pieza de forma irregular que, al girar, empuja a otra hacia arriba y hacia abajo.", correct:"G", tema:"ra2"},
+ {text:"Plano inclinado enrollado que convierte un giro en avance con gran fuerza.", correct:"A", tema:"ra3"},
+ {text:"Motor DC con engranajes que reducen la velocidad y aumentan la fuerza.", correct:"K", tema:"ra4"},
+ {text:"Pequeña computadora integrada dentro de un robot que controla motores y sensores, como Arduino o ESP32.", correct:"F", tema:"ra5"}
 ];
 
 const STUDENT_ROSTER = [
@@ -382,10 +384,10 @@ const LOGO_B64 = "/9j/4AAQSkZJRgABAgAAAQABAAD/wAARCAL0AmgDACIAAREBAhEB/9sAQwAIBg
 
 const TEACHER_CODE = "prog2026";
 const DEFAULT_CONFIG = {
-  enabled:true,
+  enabled:false,
   institucion:"CTP Mercedes Norte",
-  asignatura:"Prueba Comprensiva Programación",
-  subarea:"Fundamentos de Python",
+  asignatura:"Prueba Unidad 3: Aplicación de la robótica",
+  subarea:"Programación y prueba de la seguridad del software",
   docente:"M.Sc. Ericka Hernández Mena — Docente Técnica",
   nivel:"Décimo",
   seccion:"10-2 y 10-3",
@@ -431,7 +433,8 @@ async function getConfigRemote(){
   const r = await apiGet("getConfig"); if(!r.ok) return {ok:false};
   let value=null; if(r.value){ try{ value=JSON.parse(r.value); }catch(e){} } return {ok:true, value};
 }
-async function saveConfigRemote(obj){ const r = await apiPost("saveConfig", obj); return {ok: !!r.ok}; }
+function mergeConfig(v){ return (v && v.examId===EXAM_ID) ? Object.assign(Object.assign({}, DEFAULT_CONFIG), v) : Object.assign({}, DEFAULT_CONFIG); }
+async function saveConfigRemote(obj){ const r = await apiPost("saveConfig", Object.assign({}, obj, {examId:EXAM_ID})); return {ok: !!r.ok}; }
 async function getSubmissionRemote(id){
   const r = await apiGet("getSubmission", {id}); if(!r.ok) return {ok:false};
   let value=null; if(r.value){ try{ value=JSON.parse(r.value); }catch(e){} } return {ok:true, value};
@@ -497,7 +500,7 @@ let saveTimeout = null;
 function scheduleSaveProgress(){ clearTimeout(saveTimeout); saveTimeout = setTimeout(saveProgress, 700); }
 async function saveProgress(){
   if(state.screen!=="exam" || state.previewMode) return;
-  await saveProgressRemote({ id:state.student.cedula, nombre:state.student.nombre, cedula:state.student.cedula, seccion:state.student.seccion, answers:state.answers, startTime:state.startTime, tabWarnings: state.tabWarnings||0, suOrder:state.suOrder, cOrder:state.cOrder, rcOrder:state.rcOrder });
+  await saveProgressRemote({ id:EXAM_PREFIX+state.student.cedula, examId:EXAM_ID, nombre:state.student.nombre, cedula:state.student.cedula, seccion:state.student.seccion, answers:state.answers, startTime:state.startTime, tabWarnings: state.tabWarnings||0, suOrder:state.suOrder, cOrder:state.cOrder, rcOrder:state.rcOrder });
 }
 
 /* ---------- calificación automática ---------- */
@@ -512,7 +515,7 @@ function scoreRC(answers){
       const norm = normalizeText(arr[i]); if(!norm) continue;
       for(let si=0; si<q.sets.length; si++){
         if(used.has(si)) continue;
-        if(q.sets[si].some(k=>norm===k || norm.includes(k) || k.includes(norm))){ used.add(si); count++; break; }
+        if(q.sets[si].some(k=>norm===k || norm.includes(k) || (norm.length>=6 && k.includes(norm)))){ used.add(si); count++; break; }
       }
     }
     const qs = Math.min(count, q.max); perItem[q.id]=qs; total+=qs;
@@ -534,7 +537,7 @@ function init(){
   state.screen = "landing"; render();
   getConfigRemote().then(cfg=>{
     if(cfg.ok && cfg.value){
-      state.config = Object.assign({}, DEFAULT_CONFIG, cfg.value);
+      state.config = mergeConfig(cfg.value);
       if(state.screen==="landing") render();
     }
   });
@@ -580,12 +583,14 @@ async function startExam(){
   if(normalizeCedula(cedulaCheck) !== normalizeCedula(roster.cedula)){ flash("La cédula no coincide con el nombre seleccionado. Revisá e intentá de nuevo."); return; }
 
   const fullName = roster.ap1+" "+roster.ap2+" "+roster.nombre;
-  const id = roster.cedula;
+  const id = EXAM_PREFIX + roster.cedula;
   if(state.busy) return;
   state.busy = true; render();
 
   const [subResp, progResp] = await Promise.all([ getSubmissionRemote(id), getProgressRemote(id) ]);
   if(!subResp.ok){ state.busy=false; flash("No se pudo conectar con la base de datos. Esperá unos segundos y volvé a intentar."); render(); return; }
+  if(subResp.value && subResp.value.examId!==EXAM_ID) subResp.value = null;
+  if(progResp.ok && progResp.value && progResp.value.examId!==EXAM_ID) progResp.value = null;
   if(subResp.value){
     state.submission = subResp.value; state.submissionId = id;
     state.student.nombre = fullName; state.student.cedula = roster.cedula; state.student.seccion = roster.seccion;
@@ -670,7 +675,7 @@ async function submitExam(auto){
 
   const base = {
     nombre:state.student.nombre, cedula:state.student.cedula, seccion:state.student.seccion,
-    timestamp:new Date().toISOString(), autoSubmitted: !!auto,
+    examId:EXAM_ID, timestamp:new Date().toISOString(), autoSubmitted: !!auto,
     answers: state.answers, tabWarnings: state.tabWarnings,
     autoScoreSU, autoScoreC, autoScoreRC: rcResult.total, rcScores: rcResult.perItem,
     graded:true, totalScore
@@ -678,7 +683,7 @@ async function submitExam(auto){
 
   if(state.previewMode){ state.submission = Object.assign({id:"preview"}, base); state.busy=false; state.screen="submitted"; render(); return; }
 
-  const id = state.student.cedula;
+  const id = EXAM_PREFIX + state.student.cedula;
   const submission = Object.assign({id}, base);
 
   let saved = false;
@@ -706,7 +711,7 @@ async function submitExam(auto){
 async function loadTeacherSubs(){
   const resp = await listSubmissionsRemote();
   const subs = [];
-  if(resp.ok && resp.values){ resp.values.forEach(v=>{ if(v) subs.push(v); }); }
+  if(resp.ok && resp.values){ resp.values.forEach(v=>{ if(v && v.examId===EXAM_ID) subs.push(v); }); }
   else if(!resp.ok){ flash("No se pudo conectar con la base de datos para cargar las entregas."); }
   subs.sort((a,b)=> (a.nombre||"").localeCompare(b.nombre||""));
   state.teacherSubs = subs;
@@ -725,12 +730,12 @@ async function saveConfig(){
   const resp = await saveConfigRemote(c);
   if(!resp.ok){ flash("No se pudo guardar (falló la conexión con el backend). Intentá de nuevo."); return; }
   const check = await getConfigRemote();
-  if(check.ok && check.value){ state.config = Object.assign({}, DEFAULT_CONFIG, check.value); }
+  if(check.ok && check.value){ state.config = mergeConfig(check.value); }
   flash("Configuración guardada y confirmada."); render();
 }
 async function reloadConfig(){
   const resp = await getConfigRemote();
-  if(resp.ok && resp.value){ state.config = Object.assign({}, DEFAULT_CONFIG, resp.value); flash("Estado recargado desde la base de datos."); }
+  if(resp.ok && resp.value){ state.config = mergeConfig(resp.value); flash("Estado recargado desde la base de datos."); }
   else if(resp.ok){ flash("No hay configuración guardada todavía."); }
   else { flash("No se pudo conectar con el backend."); }
   render();
@@ -741,7 +746,7 @@ async function toggleEnabled(){
   const resp = await saveConfigRemote(state.config);
   if(!resp.ok){ flash("No se pudo guardar el cambio (falló la conexión). Intentá de nuevo."); state.config.enabled = !desired; render(); return; }
   const check = await getConfigRemote();
-  if(check.ok && check.value){ const saved = check.value; flash(saved.enabled ? "Prueba habilitada." : "Prueba deshabilitada."); state.config = Object.assign({}, DEFAULT_CONFIG, saved); }
+  if(check.ok && check.value){ const saved = check.value; flash(saved.enabled ? "Prueba habilitada." : "Prueba deshabilitada."); state.config = mergeConfig(saved); }
   render();
 }
 function toggleExpand(id){ state.teacherExpanded = state.teacherExpanded===id ? null : id; render(); }
@@ -750,7 +755,7 @@ async function saveGrade(id){
   const sub = state.teacherSubs.find(s=>s.id===id);
   if(!sub) return;
   const clamp = (v, max) => { v = parseFloat(v); if(isNaN(v)) v=0; return Math.max(0, Math.min(max, v)); };
-  const su = clamp(document.getElementById("g-su-"+id).value, 25);
+  const su = clamp(document.getElementById("g-su-"+id).value, 20);
   const c = clamp(document.getElementById("g-c-"+id).value, 10);
   let rcTotal = 0; const rcScores = {};
   PART_RC.forEach(q=>{
@@ -799,7 +804,7 @@ function computeGradeExtras(totalScore, valorPorcentual){
   return {notaCien, valorGanado, pct: isNaN(pct)?null:pct};
 }
 function exportCSV(){
-  let rows = [["Nombre","Cédula","Sección","SU (/25)","RC (/15)","C (/10)","Total (/50)","Nota (0-100)","% del "+(state.config.valorPorcentual||"")+"%","Cambios de ventana"]];
+  let rows = [["Nombre","Cédula","Sección","SU (/20)","RC (/20)","C (/10)","Total (/50)","Nota (0-100)","% del "+(state.config.valorPorcentual||"")+"%","Cambios de ventana"]];
   state.teacherSubs.forEach(s=>{
     const extras = computeGradeExtras(s.totalScore, state.config.valorPorcentual);
     rows.push([s.nombre, s.cedula, s.seccion||"", s.autoScoreSU, s.autoScoreRC, s.autoScoreC, s.totalScore, extras.notaCien, extras.valorGanado==null?"":extras.valorGanado, s.tabWarnings||0]);
@@ -807,7 +812,7 @@ function exportCSV(){
   const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
   const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = "calificaciones-programacion-10-2-10-3.csv";
+  const a = document.createElement("a"); a.href = url; a.download = "calificaciones-robotica-u3-10-2-10-3.csv";
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 function downloadStudentCopy(){
@@ -827,9 +832,9 @@ function downloadStudentCopy(){
   }).join("\n");
   const extras = computeGradeExtras(s.totalScore, state.config.valorPorcentual);
   const content =
-"PRUEBA COMPRENSIVA PROGRAMACIÓN — COPIA DE LA PERSONA ESTUDIANTE\n====================================================================\n"+
+"PRUEBA UNIDAD 3: APLICACIÓN DE LA ROBÓTICA — COPIA DE LA PERSONA ESTUDIANTE\n====================================================================\n"+
 "Nombre: "+s.nombre+"\nCédula: "+s.cedula+"\nSección: "+(s.seccion||"")+"\nEntregado: "+new Date(s.timestamp).toLocaleString("es-CR")+"\n\n"+
-"RESULTADO\nSU (/25): "+s.autoScoreSU+"\nRC (/15): "+s.autoScoreRC+"\nC (/10): "+s.autoScoreC+"\nTOTAL: "+s.totalScore+" / 50\nNOTA (0-100): "+extras.notaCien+"\n\n"+
+"RESULTADO\nSU (/20): "+s.autoScoreSU+"\nRC (/20): "+s.autoScoreRC+"\nC (/10): "+s.autoScoreC+"\nTOTAL: "+s.totalScore+" / 50\nNOTA (0-100): "+extras.notaCien+"\n\n"+
 "====================================================================\nSU — SELECCIÓN ÚNICA\n====================================================================\n"+suLines+"\n"+
 "====================================================================\nRC — RESPUESTA CORTA\n====================================================================\n"+rcLines+"\n"+
 "====================================================================\nC — CORRESPONDENCIA\n====================================================================\n"+cLines;
@@ -892,7 +897,7 @@ function renderLanding(){
           <div style="color:var(--gold);font-weight:600;font-size:12px;">CTP Mercedes Norte</div>
         </div>
       </div>
-      <h1>Programación</h1><p class="sub">${esc(metaLine)}</p>
+      <h1>Aplicación de la robótica</h1><p class="sub">${esc(metaLine)}</p>
       <div class="cover-meta"><div>Nivel: ${esc(c.nivel)}</div><div>Secciones: ${esc(c.seccion)}</div><div>Docente: ${esc(c.docente||"—")}</div><div>Fecha: ${esc(c.fecha||"—")}</div></div>
     </div></div>
     <div class="wrap">${body}</div>
@@ -949,10 +954,10 @@ function renderExam(){
       </div>
     </div></div>
     <div class="wrap">
-      <div class="section"><div class="section-head"><span class="num">SU</span><h2>Selección Única</h2><span class="pts">25 puntos</span></div>
+      <div class="section"><div class="section-head"><span class="num">SU</span><h2>Selección Única</h2><span class="pts">20 puntos</span></div>
         <div class="section-instr">Escriba una equis sobre la opción correcta. 1 punto cada una. El orden de las preguntas puede variar entre cada persona estudiante.</div><div class="section-body">${su}</div></div>
 
-      <div class="section"><div class="section-head"><span class="num">RC</span><h2>Respuesta Corta</h2><span class="pts">15 puntos</span></div>
+      <div class="section"><div class="section-head"><span class="num">RC</span><h2>Respuesta Corta</h2><span class="pts">20 puntos</span></div>
         <div class="section-instr">Anote la cantidad de elementos que se le solicita en cada pregunta.</div><div class="section-body">${rc}</div></div>
 
       <div class="section"><div class="section-head"><span class="num">C</span><h2>Correspondencia</h2><span class="pts">10 puntos</span></div>
@@ -969,7 +974,7 @@ function renderSubmitted(){
   const extras = computeGradeExtras(s.totalScore, state.config.valorPorcentual);
   return `
     ${logoHeader()}
-    <div class="topbar"><div class="topbar-inner"><div class="brand">Programación<small>Prueba entregada</small></div></div></div>
+    <div class="topbar"><div class="topbar-inner"><div class="brand">Aplicación de la robótica<small>Prueba entregada</small></div></div></div>
     <div class="result-card">
       <div class="hint">Prueba entregada</div>
       <h2 style="margin:4px 0 0;">${esc(s.nombre)}</h2>
@@ -982,8 +987,8 @@ function renderSubmitted(){
       </div>
       ${extras.valorGanado!=null? `<p style="font-size:16px;margin:10px 0 22px;">Equivale a <strong style="color:var(--navy-2);">${extras.valorGanado}%</strong> de los <strong>${extras.pct}%</strong> que vale esta prueba.</p>`:""}
       <div class="score-grid">
-        <div class="score-item"><div class="lbl">SU — Selección Única</div><div class="val">${s.autoScoreSU} / 25</div></div>
-        <div class="score-item"><div class="lbl">RC — Respuesta Corta</div><div class="val">${s.autoScoreRC} / 15</div></div>
+        <div class="score-item"><div class="lbl">SU — Selección Única</div><div class="val">${s.autoScoreSU} / 20</div></div>
+        <div class="score-item"><div class="lbl">RC — Respuesta Corta</div><div class="val">${s.autoScoreRC} / 20</div></div>
         <div class="score-item"><div class="lbl">C — Correspondencia</div><div class="val">${s.autoScoreC} / 10</div></div>
         <div class="score-item"><div class="lbl">Puntos totales</div><div class="val">${s.totalScore} / 50</div></div>
       </div>
@@ -1019,7 +1024,7 @@ function renderSpecTable(){
     return `<tr><td>${esc(TEMA_NOMBRES[k])}</td><td>${row.su}</td><td>${row.rc}</td><td>${row.c}</td><td><strong>${pts}</strong></td>
       <td><input type="text" class="grade-input" style="width:60px;" id="lec-${k}" value="${esc(lecciones[k]||"")}" placeholder="—" /></td></tr>`;
   }).join("");
-  return `${logoHeader()}<div class="topbar"><div class="topbar-inner"><div class="brand">Tabla de especificaciones<small>Programación</small></div><button class="btn btn-ghost-nav btn-small" data-action="to-dashboard">Volver al panel</button></div></div>
+  return `${logoHeader()}<div class="topbar"><div class="topbar-inner"><div class="brand">Tabla de especificaciones<small>Aplicación de la robótica</small></div><button class="btn btn-ghost-nav btn-small" data-action="to-dashboard">Volver al panel</button></div></div>
     <div class="wrap"><div class="tpanel">
       <p class="hint">Distribución de puntos por aprendizaje. Completá el número de lecciones invertidas en cada tema.</p>
       <div style="overflow-x:auto;"><table class="subs"><thead><tr><th>Aprendizaje</th><th>SU</th><th>RC</th><th>C</th><th>Puntos</th><th>N.º lecciones</th></tr></thead>
@@ -1040,10 +1045,10 @@ function renderAnswerKey(){
     const label = PART_C_COLA.find(([k])=>k===st.correct)[1];
     return `<div class="a-item">${idx+1}. ${esc(st.text)} → <strong style="color:var(--good);">${st.correct}) ${esc(label)}</strong></div>`;
   }).join("");
-  return `${logoHeader()}<div class="topbar"><div class="topbar-inner"><div class="brand">Clave de respuestas<small>Programación</small></div><button class="btn btn-ghost-nav btn-small" data-action="to-dashboard">Volver al panel</button></div></div>
+  return `${logoHeader()}<div class="topbar"><div class="topbar-inner"><div class="brand">Clave de respuestas<small>Aplicación de la robótica</small></div><button class="btn btn-ghost-nav btn-small" data-action="to-dashboard">Volver al panel</button></div></div>
     <div class="wrap">
-      <div class="section"><div class="section-head"><span class="num">SU</span><h2>Selección Única</h2><span class="pts">25 puntos</span></div><div class="section-body">${su}</div></div>
-      <div class="section"><div class="section-head"><span class="num">RC</span><h2>Respuesta Corta</h2><span class="pts">15 puntos</span></div><div class="section-body">${rc}</div></div>
+      <div class="section"><div class="section-head"><span class="num">SU</span><h2>Selección Única</h2><span class="pts">20 puntos</span></div><div class="section-body">${su}</div></div>
+      <div class="section"><div class="section-head"><span class="num">RC</span><h2>Respuesta Corta</h2><span class="pts">20 puntos</span></div><div class="section-body">${rc}</div></div>
       <div class="section"><div class="section-head"><span class="num">C</span><h2>Correspondencia</h2><span class="pts">10 puntos</span></div><div class="section-body">${c}</div></div>
     </div>`;
 }
@@ -1085,10 +1090,10 @@ function renderPrintable(){
         <div>Valor porcentual: ${esc(c.valorPorcentual)}%</div><div>Puntos obtenidos: __________</div>
         <div>Nombre del estudiante: ________________________________</div><div>Calificación (0-100): __________</div>
       </div>
-      <div class="print-section-title">SU — SELECCIÓN ÚNICA (25 puntos)</div>
+      <div class="print-section-title">SU — SELECCIÓN ÚNICA (20 puntos)</div>
       <div class="print-instr">Escriba una equis sobre la opción correcta.</div>${su}
       <div style="page-break-before:always;"></div>
-      <div class="print-section-title">RC — RESPUESTA CORTA (15 puntos)</div>
+      <div class="print-section-title">RC — RESPUESTA CORTA (20 puntos)</div>
       <div class="print-instr">Anote la cantidad de elementos solicitada en cada pregunta.</div>${rc}
       <div class="print-section-title">C — CORRESPONDENCIA (10 puntos)</div>
       <div class="print-instr">Escriba la letra correspondiente dentro del paréntesis.</div>
@@ -1131,13 +1136,13 @@ function renderTeacherDashboard(){
         return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${idx+1}. respondió <strong>${given||"—"}</strong> (correcta: ${st.correct})</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
       }).join("");
       detail = `<tr><td colspan="4"><div class="detail">
-        <h4>SU — detalle (auto: ${s.autoScoreSU}/25)</h4>${suList}
-        <h4>RC — detalle, autocalificada (auto: ${s.autoScoreRC}/15)</h4>${rcList}
+        <h4>SU — detalle (auto: ${s.autoScoreSU}/20)</h4>${suList}
+        <h4>RC — detalle, autocalificada (auto: ${s.autoScoreRC}/20)</h4>${rcList}
         <h4>C — detalle (auto: ${s.autoScoreC}/10)</h4>${cList}
         <div class="rubric" style="margin-top:14px;">
           <div class="rubric-title">Ajustar puntos manualmente (por si hay una apelación válida)</div>
           <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
-            <div>SU (máx. 25): <input type="number" min="0" max="25" step="0.5" class="grade-input" id="g-su-${s.id}" value="${s.autoScoreSU}" /></div>
+            <div>SU (máx. 20): <input type="number" min="0" max="20" step="0.5" class="grade-input" id="g-su-${s.id}" value="${s.autoScoreSU}" /></div>
             <div>C (máx. 10): <input type="number" min="0" max="10" step="0.5" class="grade-input" id="g-c-${s.id}" value="${s.autoScoreC}" /></div>
           </div>
         </div>
@@ -1150,7 +1155,7 @@ function renderTeacherDashboard(){
     const extras = computeGradeExtras(s.totalScore, c.valorPorcentual);
     return `<tr>
       <td>${esc(s.nombre)}<div class="hint mono" style="margin-top:2px;">${esc(s.cedula)} · ${esc(s.seccion||"")}</div></td>
-      <td><strong style="font-size:20px;color:var(--navy-2);">${extras.notaCien}</strong><span class="hint"> / 100</span><div class="hint" style="margin-top:2px;">SU:${s.autoScoreSU}/25 · RC:${s.autoScoreRC}/15 · C:${s.autoScoreC}/10 · ${s.totalScore}/50${extras.valorGanado!=null? ' · '+extras.valorGanado+'% del '+extras.pct+'%':''}</div></td>
+      <td><strong style="font-size:20px;color:var(--navy-2);">${extras.notaCien}</strong><span class="hint"> / 100</span><div class="hint" style="margin-top:2px;">SU:${s.autoScoreSU}/20 · RC:${s.autoScoreRC}/20 · C:${s.autoScoreC}/10 · ${s.totalScore}/50${extras.valorGanado!=null? ' · '+extras.valorGanado+'% del '+extras.pct+'%':''}</div></td>
       <td>${s.tabWarnings ? '<span class="badge pend">'+s.tabWarnings+'</span>' : '—'}</td>
       <td style="white-space:nowrap;"><button class="btn btn-ghost btn-small" data-action="expand" data-id="${s.id}">${expanded?'Ocultar':'Ver'}</button><button class="btn btn-danger btn-small" data-action="delete-sub" data-id="${s.id}">Eliminar</button></td>
     </tr>${detail}`;
@@ -1158,7 +1163,7 @@ function renderTeacherDashboard(){
 
   return `
     ${logoHeader()}
-    <div class="topbar"><div class="topbar-inner"><div class="brand">Panel docente<small>Programación — 10-2 y 10-3</small></div><button class="btn btn-ghost-nav btn-small" data-action="back">Salir</button></div></div>
+    <div class="topbar"><div class="topbar-inner"><div class="brand">Panel docente<small>Aplicación de la robótica — 10-2 y 10-3</small></div><button class="btn btn-ghost-nav btn-small" data-action="back">Salir</button></div></div>
     <div class="wrap">
       <div class="tpanel">
         <div class="toggle-row">
