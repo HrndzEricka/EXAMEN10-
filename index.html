@@ -854,7 +854,7 @@ function downloadStudentCopy(){
   const s = state.submission; if(!s) return;
   const suLines = PART_SU.map(q=>{
     const given = s.answers.su[q.id]; const opt = q.options.find(([k])=>k===given);
-    return q.id+". "+q.text+"\n   Tu respuesta: "+(given? given+") "+(opt?opt[1]:"") : "— sin responder —")+"\n";
+    return q.id+". "+q.text+"\n   Tu respuesta: "+(given? (opt?opt[1]:given) : "— sin responder —")+"\n";
   }).join("\n");
   const rcLines = PART_RC.map(q=>{
     const arr = s.answers.rc[q.id]||[]; const lines=[];
@@ -951,7 +951,8 @@ function renderExam(){
   const suOrder = state.suOrder || PART_SU.map((_,i)=>i);
   const su = suOrder.map((qi,pos)=>{
     const q = PART_SU[qi];
-    const opts = q.options.map(([k,label])=>`<label class="option"><input type="radio" name="su-${q.id}" value="${k}" data-action="ans-su" data-id="${q.id}" ${state.answers.su[q.id]===k?"checked":""}/><span class="k">${k})</span> <span>${esc(label)}</span></label>`).join("");
+    const optOrder = shuffledIndices(q.options.length, (state.previewMode?"vista-previa":state.student.cedula)+"-opt-"+q.id);
+    const opts = optOrder.map((oi,op)=>{ const [k,label] = q.options[oi]; return `<label class="option"><input type="radio" name="su-${q.id}" value="${k}" data-action="ans-su" data-id="${q.id}" ${state.answers.su[q.id]===k?"checked":""}/><span class="k">${"ABCDEFGH"[op]})</span> <span>${esc(label)}</span></label>`; }).join("");
     const codeHtml = q.code ? `<div class="code-box">${q.code.map(l=>esc(l)).join("\n")}</div>` : "";
     return `<div class="q"><div class="q-text"><span class="q-num">${pos+1}.</span>${esc(q.text)}</div>${codeHtml}<div class="options">${opts}</div></div>`;
   }).join("");
@@ -1033,7 +1034,7 @@ function renderSubmitted(){
     const suRev = PART_SU.map(q=>{
       const given = s.answers.su[q.id]; const ok = given===q.correct;
       const optLabel = q.options.find(([k])=>k===q.correct);
-      return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${q.id}. tu respuesta: <strong>${given||"—"}</strong>${!ok?` · correcta: <strong style="color:var(--good);">${q.correct}) ${esc(optLabel[1])}</strong>`:''}</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
+      return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${esc(q.text)}<br>Tu respuesta: <strong>${given? esc((q.options.find(([k])=>k===given)||[,given])[1]) : "—"}</strong>${!ok?` · correcta: <strong style="color:var(--good);">${esc(optLabel[1])}</strong>`:''}</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
     }).join("");
     const rcRev = PART_RC.map(q=>{
       const got = s.rcScores?s.rcScores[q.id]:0;
@@ -1274,7 +1275,7 @@ function renderTeacherDashboard(){
     if(expanded){
       const suList = PART_SU.map(q=>{
         const given = s.answers.su[q.id]; const ok = given===q.correct;
-        return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${q.id}. respondió <strong>${given||"—"}</strong> (correcta: ${q.correct})</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
+        return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${q.id}. respondió <strong>${given? given+") "+esc((q.options.find(([k])=>k===given)||[,""])[1]) : "—"}</strong> (correcta: ${q.correct})</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
       }).join("");
       const rcList = PART_RC.map(q=>{
         const arr = s.answers.rc[q.id]||[];
