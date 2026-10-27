@@ -185,6 +185,9 @@ textarea{
 .tpanel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);margin:20px 0;padding:20px;}
 .tpanel h3{margin-top:0;font-size:16px;color:var(--navy-2);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+.sec-row{display:flex;gap:10px;}
+.sec-btn{flex:1;padding:14px 10px;font-size:18px;font-weight:700;border:2px solid var(--line);border-radius:var(--radius);background:var(--paper);color:var(--navy);cursor:pointer;font-family:inherit;}
+.sec-btn.on{border-color:var(--navy);background:var(--navy);color:#fff;}
 .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
 .switch{position:relative;width:44px;height:24px;background:var(--slate);border-radius:12px;cursor:pointer;flex-shrink:0;}
 .switch.on{background:var(--good);}
@@ -905,12 +908,18 @@ function renderLanding(){
   if(!c.enabled){
     body = `<div class="locked"><h3 style="margin-top:0;color:var(--navy-2);">Prueba no disponible</h3><p>La persona docente aún no ha habilitado esta prueba. Intentá más tarde.</p></div>`;
   } else {
-    const options = STUDENT_ROSTER.map((s,idx)=>`<option value="${idx}">[${esc(s.seccion)}] ${esc(s.ap1)} ${esc(s.ap2)} ${esc(s.nombre)}</option>`).join("");
+    const secciones = [...new Set(STUDENT_ROSTER.map(s=>s.seccion))].sort();
+    const sec = state.landingSeccion || "";
+    const options = STUDENT_ROSTER.map((s,idx)=>({s,idx})).filter(x=>x.s.seccion===sec)
+      .map(({s,idx})=>`<option value="${idx}">${esc(s.ap1)} ${esc(s.ap2)} ${esc(s.nombre)}</option>`).join("");
+    const secBtns = secciones.map(x=>`<button type="button" class="sec-btn ${x===sec?'on':''}" data-action="pick-seccion" data-id="${esc(x)}">${esc(x)}</button>`).join("");
     body = `
       <div class="card">
-        <div class="field"><label>Seleccioná tu nombre en la lista</label>
-          <select id="in-alumno"><option value="">— Elegí tu nombre —</option>${options}</select></div>
-        <div class="field"><label>Confirmá tu cédula o carné</label>
+        <div class="field"><label>1. Elegí tu sección</label>
+          <div class="sec-row">${secBtns}</div></div>
+        <div class="field"><label>2. Seleccioná tu nombre en la lista</label>
+          <select id="in-alumno" ${sec?'':'disabled'}><option value="">${sec?'— Elegí tu nombre —':'— Primero elegí tu sección —'}</option>${options}</select></div>
+        <div class="field"><label>3. Confirmá tu cédula o carné</label>
           <input type="text" id="in-cedula-check" placeholder="Ej. 1-2345-6789 o 123456789" />
           <div class="hint">Debe coincidir con la cédula registrada para tu nombre.</div></div>
         <div class="hint" style="margin-bottom:18px;">Duración: <strong>${esc(c.duracionMinutos)} minutos, tiempo continuo sin fraccionar</strong> · Puntuación total: <strong>50 puntos</strong>${c.valorPorcentual? " · Valor: <strong>"+esc(c.valorPorcentual)+"%</strong>":""}</div>
@@ -1382,7 +1391,8 @@ function render(){
 document.addEventListener("click", (e)=>{
   const t = e.target.closest("[data-action]"); if(!t) return;
   const action = t.getAttribute("data-action"); const id = t.getAttribute("data-id");
-  if(action==="start") startExam();
+  if(action==="pick-seccion"){ state.landingSeccion = id; const ced = document.getElementById("in-cedula-check"); const v = ced?ced.value:""; render(); const c2=document.getElementById("in-cedula-check"); if(c2) c2.value=v; }
+  else if(action==="start") startExam();
   else if(action==="submit") submitExam(false);
   else if(action==="teacher-login") goTeacherLogin();
   else if(action==="teacher-submit") attemptTeacherLogin();
