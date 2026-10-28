@@ -251,7 +251,8 @@ table.subs tr:hover td{background:#F1ECDD;}
 .print-cols .colA{background:none;border:1px solid #999;flex:1;}
 .print-cols .colB{flex:1.4;}
 .print-match{display:flex;gap:6px;margin-bottom:8px;font-size:12.5px;align-items:baseline;}
-.print-match .paren{font-family:'IBM Plex Mono';}
+.print-match .paren{font-family:'IBM Plex Mono';white-space:nowrap;flex-shrink:0;}
+.print-match span:first-child{flex:1;}
 .print-spec table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
 .print-spec th,.print-spec td{border:1px solid #999;padding:5px 8px;text-align:left;}
 .print-spec th{background:#eee;}
@@ -300,7 +301,7 @@ const PART_SU = [
  {id:6, tema:"ra2", text:"Mecanismo que se usa en el portón eléctrico:", code:null, options:[["A","Piñón-cremallera"],["C","Biela-manivela"],["D","Cadena y piñón"]], correct:"A"},
  {id:7, tema:"ra2", text:"Pieza que reduce la fricción entre un eje y su soporte:", code:null, options:[["B","Rodamiento"],["C","Correa"],["D","Cremallera"]], correct:"B"},
  {id:8, tema:"ra2", text:"Mecanismo que lleva el giro entre dos ruedas dentadas separadas sin deslizar, como en la bicicleta:", code:null, options:[["A","Polea con correa"],["B","Piñón-cremallera"],["D","Cadena y piñón"]], correct:"D"},
- {id:9, tema:"ra3", text:"¿Cuál de las siguientes NO es una máquina simple?", code:null, options:[["A","Cuña"],["C","Polea"],["D","Carretilla"]], correct:"D"},
+ {id:9, tema:"ra3", text:"¿Cuál de las siguientes es una máquina compuesta?", code:null, options:[["A","Cuña"],["C","Polea"],["D","Carretilla"]], correct:"D"},
  {id:10, tema:"ra3", text:"Una carga de 40 kg está a 0,5 m del punto de apoyo y se empuja a 2 m. La fuerza necesaria es:", code:null, options:[["A","10 kg"],["B","20 kg"],["C","80 kg"]], correct:"A"},
  {id:11, tema:"ra3", text:"En un acople directo, las piezas:", code:null, options:[["A","Giran en el mismo sentido"],["B","Giran en sentidos opuestos"],["D","Necesitan una correa"]], correct:"B"},
  {id:12, tema:"ra3", text:"Un engranaje conductor de 30 dientes da 2 vueltas y mueve uno conducido de 10 dientes. El conducido da:", code:null, options:[["A","2 vueltas"],["B","3 vueltas"],["C","6 vueltas"]], correct:"C"},
@@ -309,44 +310,49 @@ const PART_SU = [
  {id:15, tema:"ra4", text:"Interruptor que se acciona con una corriente pequeña para controlar un circuito de mayor potencia:", code:null, options:[["A","Final de carrera"],["B","Relé"],["C","Tope"]], correct:"B"},
  {id:16, tema:"ra4", text:"Simulador que además permite programar el sistema, como RoboDK o Factory I/O:", code:null, options:[["A","Simulador eléctrico"],["B","Monitor serie"],["C","Simulador informático"]], correct:"C"},
  {id:17, tema:"ra5", text:"Sensor que mide la cantidad de luz:", code:null, options:[["A","PIR"],["B","Ultrasónico"],["D","LDR"]], correct:"D"},
- {id:18, tema:"ra5", text:"El controlador no mueve los motores directamente; para eso usa:", code:null, options:[["A","Un driver de motores o un relé"],["B","Un sensor"],["C","Un monitor serie"]], correct:"A"},
+ {id:18, tema:"ra5", text:"El controlador no mueve los motores directamente; para manejarlos usa un", code:null, options:[["A","Driver de motores"],["B","Sensor"],["C","Monitor serie"]], correct:"A"},
  {id:19, tema:"ra6", text:"Una aspiradora que esquiva sillas es un robot de nivel:", code:null, options:[["B","2, adaptativo"],["C","3, inteligente"],["D","4, autónomo avanzado"]], correct:"B"},
  {id:20, tema:"ra6", text:"Un robot logra su tarea en 18 de 24 intentos. ¿Qué porcentaje de éxito tiene?", code:null, options:[["B","60 %"],["C","75 %"],["D","80 %"]], correct:"C"}
 ];
 
 const PART_RC = [
- {id:1, tema:"ra1", text:"Nombre las TRES etapas del ciclo de un sistema robotizado.", max:3, ref:"Lista cerrada: Percepción, razonamiento, acción",
+ {id:1, tema:"ra1", text:"Escriba las TRES etapas del ciclo de un sistema robotizado.", max:3, ref:"Lista cerrada: Percepción, razonamiento, acción",
    sets:[["percepcion", "percep"], ["razonamiento", "razona"], ["accion"]]},
- {id:2, tema:"ra2", text:"Nombre los TRES tipos de movimiento.", max:3, ref:"Lista cerrada: Rotativo, lineal, alternativo",
+ {id:2, tema:"ra2", text:"Escriba los TRES tipos de movimiento.", max:3, ref:"Lista cerrada: Rotativo, lineal, alternativo",
    sets:[["rotativo", "rotativ", "rotacion", "rotatorio", "giratorio"], ["lineal", "rectilineo"], ["alternativo", "alternativ"]]},
  {id:3, tema:"ra2", text:"Escriba las DOS clases de mecanismos según si cambian o no el tipo de movimiento.", max:2, ref:"Lista cerrada: Transmisión, transformación",
    sets:[["transmision", "transmis"], ["transformacion", "transform"]]},
  {id:4, tema:"ra3", text:"Escriba las DOS máquinas simples que forman una carretilla.", max:2, ref:"Lista cerrada: Palanca, rueda y eje",
    sets:[["palanca"], ["rueda y eje", "rueda", "eje"]]},
- {id:5, tema:"ra4", text:"Nombre los TRES tipos de circuito según cómo se conectan sus receptores.", max:3, ref:"Lista cerrada: Serie, paralelo, mixto",
+ {id:5, tema:"ra4", text:"Escriba los TRES tipos de circuito según cómo se conectan sus receptores.", max:3, ref:"Lista cerrada: Serie, paralelo, mixto",
    sets:[["serie"], ["paralelo", "paralel"], ["mixto", "mixt"]]},
  {id:6, tema:"ra5", text:"Escriba los DOS tipos de señal que entregan los sensores.", max:2, ref:"Lista cerrada: Digital, analógica",
    sets:[["digital"], ["analogica", "analogico", "analog"]]},
- {id:7, tema:"ra6", text:"Nombre las TRES capas en que se diseña un robot.", max:3, ref:"Lista cerrada: Estructura física, sistema de control, programación",
+ {id:7, tema:"ra6", text:"Escriba las TRES capas en que se diseña un robot.", max:3, ref:"Lista cerrada: Estructura física, sistema de control, programación",
    sets:[["estructura fisica", "estructura"], ["sistema de control", "control"], ["programacion", "program"]]},
  {id:8, tema:"ra6", text:"Escriba los DOS criterios con que se evalúa un robot.", max:2, ref:"Lista cerrada: Efectividad, eficiencia",
    sets:[["efectividad", "efectiv"], ["eficiencia", "eficien"]]}
 ];
 
+const PART_C_GRUPOS = [
+ {g:1, titulo:"Ítem 1 · Tecnologías de la automatización robotizada", instr:"En la columna A aparecen definiciones de tecnologías usadas en la automatización robotizada y en la columna B, sus nombres. Para cada definición, elija la letra del nombre que le corresponde. Cada nombre se utiliza una sola vez y uno no se utiliza. (Valor 5 puntos)"},
+ {g:2, titulo:"Ítem 2 · Máquinas simples y mecanismos", instr:"En la columna A aparecen definiciones de máquinas simples y mecanismos y en la columna B, sus nombres. Para cada definición, elija la letra del nombre que le corresponde. Cada nombre se utiliza una sola vez y uno no se utiliza. (Valor 5 puntos)"}
+];
 const PART_C_COLA = [
- ["A","Tornillo"],["B","HMI"],["C","Domótica"],["D","Polea"],["E","PLC"],["F","Sistema embebido"],["G","Leva"],["H","IoT"],["I","Visión artificial"],["J","AGV"],["K","Motorreductor"],["L","Inmótica"]
+ ["A","AGV",1],["B","HMI",1],["C","IoT",1],["D","PLC",1],["E","Sistema embebido",1],["F","Visión artificial",1],
+ ["G","Biela-manivela",2],["H","Cuña",2],["I","Engranaje",2],["J","Leva",2],["K","Polea",2],["L","Tornillo",2]
 ];
 const PART_C_STATEMENTS = [
- {text:"Vehículo de guiado automático que transporta materiales dentro de una bodega o planta sin conductor.", correct:"J", tema:"ra1"},
- {text:"Computadora industrial resistente que controla procesos automatizados.", correct:"E", tema:"ra1"},
- {text:"Pantalla industrial para visualizar, supervisar y configurar un proceso automatizado.", correct:"B", tema:"ra5"},
- {text:"Conexión de robots, sensores y equipos por internet para intercambiar datos.", correct:"H", tema:"ra5"},
- {text:"Automatización aplicada al hogar: luces, cerraduras, persianas y electrodomésticos.", correct:"C", tema:"ra6"},
- {text:"Automatización aplicada a edificios completos: accesos, ascensores, climatización y seguridad.", correct:"L", tema:"ra6"},
- {text:"Pieza de forma irregular que, al girar, empuja a otra hacia arriba y hacia abajo.", correct:"G", tema:"ra2"},
- {text:"Plano inclinado enrollado que convierte un giro en avance con gran fuerza.", correct:"A", tema:"ra3"},
- {text:"Motor DC con engranajes que reducen la velocidad y aumentan la fuerza.", correct:"K", tema:"ra4"},
- {text:"Pequeña computadora integrada dentro de un robot que controla motores y sensores, como Arduino o ESP32.", correct:"F", tema:"ra5"}
+ {g:1, text:"Vehículo de guiado automático que transporta materiales dentro de una bodega o planta sin conductor.", correct:"A", tema:"ra1"},
+ {g:1, text:"Computadora industrial resistente que controla procesos automatizados.", correct:"D", tema:"ra1"},
+ {g:1, text:"Pantalla industrial para visualizar, supervisar y configurar un proceso automatizado.", correct:"B", tema:"ra5"},
+ {g:1, text:"Conexión de robots, sensores y equipos por internet para intercambiar datos.", correct:"C", tema:"ra5"},
+ {g:1, text:"Pequeña computadora integrada dentro de un robot que controla motores y sensores, como Arduino o ESP32.", correct:"E", tema:"ra5"},
+ {g:2, text:"Pieza de forma irregular que, al girar, empuja a otra hacia arriba y hacia abajo.", correct:"J", tema:"ra2"},
+ {g:2, text:"Rueda dentada que transmite el giro a otra rueda dentada sin deslizar.", correct:"I", tema:"ra2"},
+ {g:2, text:"Máquina simple formada por un plano inclinado enrollado que convierte un giro en avance con gran fuerza.", correct:"L", tema:"ra3"},
+ {g:2, text:"Máquina simple formada por dos planos inclinados que sirve para separar o cortar materiales, como el hacha.", correct:"H", tema:"ra3"},
+ {g:2, text:"Rueda con un canal por donde pasa una cuerda o correa y que cambia la dirección de la fuerza.", correct:"K", tema:"ra3"}
 ];
 
 const STUDENT_ROSTER = [
@@ -968,10 +974,14 @@ function renderExam(){
   }).join("");
 
   const cOrder = state.cOrder || PART_C_STATEMENTS.map((_,i)=>i);
-  const colARef = `<div class="colA"><div class="colA-title">Columna A — Conceptos</div><div class="colA-grid">${PART_C_COLA.map(([k,l])=>`<div><strong>${k}.</strong> ${esc(l)}</div>`).join("")}</div></div>`;
-  const cRows = cOrder.map((idx,pos)=>{
-    const s = PART_C_STATEMENTS[idx];
-    return `<div class="match-row"><div class="txt"><strong>${pos+1}.</strong> ${esc(s.text)}</div><select data-action="ans-c" data-id="${idx}"><option value="">—</option>${PART_C_COLA.map(([k,l])=>`<option value="${k}" ${state.answers.c[idx]===k?"selected":""}>${k} — ${esc(l)}</option>`).join("")}</select></div>`;
+  const cRows = PART_C_GRUPOS.map(G=>{
+    const cola = PART_C_COLA.filter(x=>x[2]===G.g);
+    const colB = `<div class="colA"><div class="colA-title">Columna B — Nombres</div><div class="colA-grid">${cola.map(([k,l])=>`<div><strong>${k}.</strong> ${esc(l)}</div>`).join("")}</div></div>`;
+    const rows = cOrder.filter(idx=>PART_C_STATEMENTS[idx].g===G.g).map((idx,pos)=>{
+      const s = PART_C_STATEMENTS[idx];
+      return `<div class="match-row"><div class="txt"><strong>${pos+1}.</strong> ${esc(s.text)}</div><select data-action="ans-c" data-id="${idx}"><option value="">—</option>${cola.map(([k,l])=>`<option value="${k}" ${state.answers.c[idx]===k?"selected":""}>${k} — ${esc(l)}</option>`).join("")}</select></div>`;
+    }).join("");
+    return `<div class="c-item"><h3 style="margin:18px 0 6px;color:var(--navy-2);font-size:16px;">${esc(G.titulo)}</h3><div class="hint" style="margin-bottom:12px;">${esc(G.instr)}</div>${colB}<div class="colA-title" style="margin-top:14px;">Columna A — Definiciones</div>${rows}</div>`;
   }).join("");
 
   const cheatOverlay = state.showCheatWarning ? `
@@ -1004,7 +1014,7 @@ function renderExam(){
         <div class="section-instr">Anote la cantidad de elementos que se le solicita en cada pregunta.</div><div class="section-body">${rc}</div></div>
 
       <div class="section"><div class="section-head"><span class="num">C</span><h2>Correspondencia</h2><span class="pts">10 puntos</span></div>
-        <div class="section-instr">Identifique el concepto de la Columna A que corresponde a cada definición de la Columna B.</div><div class="section-body">${colARef}${cRows}</div></div>
+        <div class="section-instr">Esta parte tiene dos ítems de correspondencia de 5 puntos cada uno. Lea las instrucciones de cada ítem.</div><div class="section-body">${cRows}</div></div>
 
       <div class="submitbar"><button class="btn btn-gold" data-action="submit" ${state.busy?'disabled':''}>${state.busy?'Enviando…':'Entregar prueba'}</button></div>
     </div>
@@ -1203,10 +1213,10 @@ function renderAnswerKey(){
     return `<div class="a-item"><div class="prompt">${q.id}. ${esc(q.text)}</div>${codeHtml}${opts}</div>`;
   }).join("");
   const rc = PART_RC.map(q=>`<div class="a-item"><div class="prompt">${q.id}. ${esc(q.text)} <span class="pts-tag">(${q.max} pts)</span></div><div class="hint">${esc(q.ref)}</div></div>`).join("");
-  const c = PART_C_STATEMENTS.map((st,idx)=>{
+  const c = PART_C_GRUPOS.map(G=>`<h4 style="margin:14px 0 6px;">${esc(G.titulo)}</h4>`+PART_C_STATEMENTS.filter(st=>st.g===G.g).map((st,pos)=>{
     const label = PART_C_COLA.find(([k])=>k===st.correct)[1];
-    return `<div class="a-item">${idx+1}. ${esc(st.text)} → <strong style="color:var(--good);">${st.correct}) ${esc(label)}</strong></div>`;
-  }).join("");
+    return `<div class="a-item">${pos+1}. ${esc(st.text)} → <strong style="color:var(--good);">${st.correct}) ${esc(label)}</strong></div>`;
+  }).join("")).join("");
   return `${logoHeader()}<div class="topbar"><div class="topbar-inner"><div class="brand">Clave de respuestas<small>Aplicación de la robótica</small></div><button class="btn btn-ghost-nav btn-small" data-action="to-dashboard">Volver al panel</button></div></div>
     <div class="wrap">
       <div class="section"><div class="section-head"><span class="num">SU</span><h2>Selección Única</h2><span class="pts">20 puntos</span></div><div class="section-body">${su}</div></div>
@@ -1226,8 +1236,12 @@ function renderPrintable(){
     const blanks = Array.from({length:q.max},(_,i)=>`<div>${i+1}) <span class="print-blank">&nbsp;</span></div>`).join("");
     return `<div class="print-q"><span class="qn">${q.id}.</span>${esc(q.text)} <em>(${q.max} pts)</em><div class="print-opts">${blanks}</div></div>`;
   }).join("");
-  const colAList = PART_C_COLA.map(([k,l])=>`<div>${k}. ${esc(l)}</div>`).join("");
-  const cRows = PART_C_STATEMENTS.map((s,idx)=>`<div class="print-match"><span class="paren">( &nbsp;&nbsp; )</span> <span>${idx+1}. ${esc(s.text)}</span></div>`).join("");
+  const cPrint = PART_C_GRUPOS.map(G=>{
+    const colB = PART_C_COLA.filter(x=>x[2]===G.g).map(([k,l])=>`<div>${k}. ${esc(l)}</div>`).join("");
+    const colA = PART_C_STATEMENTS.filter(s=>s.g===G.g).map((s,pos)=>`<div class="print-match"><span>${pos+1}. ${esc(s.text)}</span> <span class="paren">( &nbsp;&nbsp; )</span></div>`).join("");
+    return `<div style="page-break-inside:avoid;"><div class="print-instr"><strong>${esc(G.titulo)}.</strong> ${esc(G.instr)}</div>
+      <div class="print-cols"><div class="colB"><strong>Columna A — Definiciones</strong>${colA}</div><div class="colA" style="padding:10px 14px;"><strong>Columna B — Nombres</strong>${colB}</div></div></div>`;
+  }).join("");
 
   const specT = computeSpecTable();
   const lecciones = c.lecciones || {};
@@ -1258,8 +1272,7 @@ function renderPrintable(){
       <div class="print-section-title">RC — RESPUESTA CORTA (20 puntos)</div>
       <div class="print-instr">Anote la cantidad de elementos solicitada en cada pregunta.</div>${rc}
       <div class="print-section-title">C — CORRESPONDENCIA (10 puntos)</div>
-      <div class="print-instr">Escriba la letra correspondiente dentro del paréntesis.</div>
-      <div class="print-cols"><div class="colA" style="padding:10px 14px;"><strong>Columna A</strong>${colAList}</div><div class="colB"><strong>Columna B</strong>${cRows}</div></div>
+      ${cPrint}
       <div style="page-break-before:always;"></div>
       <div class="print-section-title">TABLA DE ESPECIFICACIONES</div>
       <div class="print-spec"><table><thead><tr><th>Aprendizaje</th><th>Lecciones</th><th>SU</th><th>RC</th><th>C</th><th>Pts</th></tr></thead>
@@ -1450,13 +1463,14 @@ document.addEventListener("input", (e)=>{
 function updateProgressBadge(){ const el = document.querySelector(".progress-badge"); if(el) el.textContent = "· "+answeredCount()+"/"+TOTAL_ITEMS+" respondidas"; }
 
 function updateMatchOptions(){
-  const used = PART_C_STATEMENTS.map((_,i)=> state.answers.c[i]).filter(v=>v);
   PART_C_STATEMENTS.forEach((s,i)=>{
+    const used = PART_C_STATEMENTS.map((x,j)=> x.g===s.g ? state.answers.c[j] : null).filter(v=>v);
     const sel = document.querySelector('select[data-action="ans-c"][data-id="'+i+'"]');
     if(!sel) return;
     const current = state.answers.c[i] || "";
     const opts = ['<option value="">—</option>'];
-    PART_C_COLA.forEach(([k,l])=>{
+    PART_C_COLA.forEach(([k,l,g])=>{
+      if(g!==s.g) return;
       if(used.includes(k) && k!==current) return;
       opts.push('<option value="'+k+'" '+(k===current?"selected":"")+'>'+k+' — '+esc(l)+'</option>');
     });
