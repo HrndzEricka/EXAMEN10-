@@ -137,8 +137,8 @@ input,select,textarea{font-family:inherit;font-size:16.5px;}
 .q:last-child{border-bottom:none;}
 .q-text{font-size:16.5px;margin-bottom:18px;white-space:pre-line;line-height:1.6;}
 .q-num{font-family:'IBM Plex Mono';color:var(--navy-2);font-weight:600;margin-right:6px;}
-.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-@media (max-width:560px){.options{grid-template-columns:1fr;}}
+.options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media (max-width:640px){.options{grid-template-columns:1fr;}}
 .option{
   border:1px solid var(--line);border-radius:var(--radius);padding:13px 16px;
   display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--paper);
@@ -292,26 +292,26 @@ const TEMA_NOMBRES = {
 };
 
 const PART_SU = [
- {id:1, tema:"ra1", text:"Dispositivo que recibe la información de los sensores, la procesa y decide qué hacer, como Arduino o un PLC:", code:null, options:[["A","Sensor"],["B","Controlador"],["C","Actuador"],["D","Rodamiento"]], correct:"B"},
- {id:2, tema:"ra1", text:"La lavadora es ejemplo de un nivel de automatización:", code:null, options:[["A","Manual"],["B","Mecanizado"],["C","Semiautomático"],["D","Automático"]], correct:"C"},
- {id:3, tema:"ra1", text:"Robot diseñado para trabajar junto a personas, que se detiene si alguien se acerca:", code:null, options:[["A","Cobot"],["B","AGV"],["C","PLC"],["D","HMI"]], correct:"A"},
- {id:4, tema:"ra1", text:"Lo que define el nivel de automatización de un proceso es:", code:null, options:[["A","La cantidad de motores"],["B","El costo de la máquina"],["C","La velocidad del proceso"],["D","Quién toma las decisiones"]], correct:"D"},
- {id:5, tema:"ra2", text:"Barra sobre la que giran ruedas, poleas o engranajes y que transmite el giro:", code:null, options:[["A","Leva"],["B","Cremallera"],["C","Eje"],["D","Correa"]], correct:"C"},
- {id:6, tema:"ra2", text:"Mecanismo que se usa en el portón eléctrico:", code:null, options:[["A","Piñón-cremallera"],["B","Leva"],["C","Biela-manivela"],["D","Cadena y piñón"]], correct:"A"},
- {id:7, tema:"ra2", text:"Pieza que reduce la fricción entre un eje y su soporte:", code:null, options:[["A","Leva"],["B","Rodamiento"],["C","Correa"],["D","Cremallera"]], correct:"B"},
- {id:8, tema:"ra2", text:"Mecanismo que lleva el giro entre dos ruedas dentadas separadas sin deslizar, como en la bicicleta:", code:null, options:[["A","Polea con correa"],["B","Piñón-cremallera"],["C","Leva"],["D","Cadena y piñón"]], correct:"D"},
- {id:9, tema:"ra3", text:"¿Cuál de las siguientes NO es una máquina simple?", code:null, options:[["A","Cuña"],["B","Tornillo"],["C","Polea"],["D","Carretilla"]], correct:"D"},
- {id:10, tema:"ra3", text:"Una carga de 40 kg está a 0,5 m del punto de apoyo y se empuja a 2 m. La fuerza necesaria es:", code:null, options:[["A","10 kg"],["B","20 kg"],["C","80 kg"],["D","160 kg"]], correct:"A"},
- {id:11, tema:"ra3", text:"En un acople directo, las piezas:", code:null, options:[["A","Giran en el mismo sentido"],["B","Giran en sentidos opuestos"],["C","No giran"],["D","Necesitan una correa"]], correct:"B"},
- {id:12, tema:"ra3", text:"Un engranaje conductor de 30 dientes da 2 vueltas y mueve uno conducido de 10 dientes. El conducido da:", code:null, options:[["A","2 vueltas"],["B","3 vueltas"],["C","6 vueltas"],["D","60 vueltas"]], correct:"C"},
- {id:13, tema:"ra4", text:"Motor potente y duradero, usado en lavadoras, bombas y en la industria:", code:null, options:[["A","Motor AC"],["B","Motor DC"],["C","Paso a paso"],["D","Servomotor"]], correct:"A"},
- {id:14, tema:"ra4", text:"Motor ideal para impresoras 3D y máquinas CNC por su posición precisa:", code:null, options:[["A","Motor AC"],["B","Motor hidráulico"],["C","Motor neumático"],["D","Paso a paso"]], correct:"D"},
- {id:15, tema:"ra4", text:"Interruptor que se acciona con una corriente pequeña para controlar un circuito de mayor potencia:", code:null, options:[["A","Final de carrera"],["B","Relé"],["C","Tope"],["D","Leva"]], correct:"B"},
- {id:16, tema:"ra4", text:"Simulador que además permite programar el sistema, como RoboDK o Factory I/O:", code:null, options:[["A","Simulador eléctrico"],["B","Monitor serie"],["C","Simulador informático"],["D","HMI"]], correct:"C"},
- {id:17, tema:"ra5", text:"Sensor que mide la cantidad de luz:", code:null, options:[["A","PIR"],["B","Ultrasónico"],["C","Infrarrojo de línea"],["D","LDR"]], correct:"D"},
- {id:18, tema:"ra5", text:"El controlador no mueve los motores directamente; para eso usa:", code:null, options:[["A","Un driver de motores o un relé"],["B","Un sensor"],["C","Un monitor serie"],["D","Pseudocódigo"]], correct:"A"},
- {id:19, tema:"ra6", text:"Una aspiradora que esquiva sillas es un robot de nivel:", code:null, options:[["A","1, programado"],["B","2, adaptativo"],["C","3, inteligente"],["D","4, autónomo avanzado"]], correct:"B"},
- {id:20, tema:"ra6", text:"Un robot logra su tarea en 18 de 24 intentos. ¿Qué porcentaje de éxito tiene?", code:null, options:[["A","18 %"],["B","60 %"],["C","75 %"],["D","80 %"]], correct:"C"}
+ {id:1, tema:"ra1", text:"Dispositivo que recibe la información de los sensores, la procesa y decide qué hacer, como Arduino o un PLC:", code:null, options:[["A","Sensor"],["B","Controlador"],["C","Actuador"]], correct:"B"},
+ {id:2, tema:"ra1", text:"La lavadora es ejemplo de un nivel de automatización:", code:null, options:[["B","Mecanizado"],["C","Semiautomático"],["D","Automático"]], correct:"C"},
+ {id:3, tema:"ra1", text:"Robot diseñado para trabajar junto a personas, que se detiene si alguien se acerca:", code:null, options:[["A","Cobot"],["B","AGV"],["C","PLC"]], correct:"A"},
+ {id:4, tema:"ra1", text:"Lo que define el nivel de automatización de un proceso es:", code:null, options:[["A","La cantidad de motores"],["B","El costo de la máquina"],["D","Quién toma las decisiones"]], correct:"D"},
+ {id:5, tema:"ra2", text:"Barra sobre la que giran ruedas, poleas o engranajes y que transmite el giro:", code:null, options:[["A","Leva"],["C","Eje"],["D","Correa"]], correct:"C"},
+ {id:6, tema:"ra2", text:"Mecanismo que se usa en el portón eléctrico:", code:null, options:[["A","Piñón-cremallera"],["C","Biela-manivela"],["D","Cadena y piñón"]], correct:"A"},
+ {id:7, tema:"ra2", text:"Pieza que reduce la fricción entre un eje y su soporte:", code:null, options:[["B","Rodamiento"],["C","Correa"],["D","Cremallera"]], correct:"B"},
+ {id:8, tema:"ra2", text:"Mecanismo que lleva el giro entre dos ruedas dentadas separadas sin deslizar, como en la bicicleta:", code:null, options:[["A","Polea con correa"],["B","Piñón-cremallera"],["D","Cadena y piñón"]], correct:"D"},
+ {id:9, tema:"ra3", text:"¿Cuál de las siguientes NO es una máquina simple?", code:null, options:[["A","Cuña"],["C","Polea"],["D","Carretilla"]], correct:"D"},
+ {id:10, tema:"ra3", text:"Una carga de 40 kg está a 0,5 m del punto de apoyo y se empuja a 2 m. La fuerza necesaria es:", code:null, options:[["A","10 kg"],["B","20 kg"],["C","80 kg"]], correct:"A"},
+ {id:11, tema:"ra3", text:"En un acople directo, las piezas:", code:null, options:[["A","Giran en el mismo sentido"],["B","Giran en sentidos opuestos"],["D","Necesitan una correa"]], correct:"B"},
+ {id:12, tema:"ra3", text:"Un engranaje conductor de 30 dientes da 2 vueltas y mueve uno conducido de 10 dientes. El conducido da:", code:null, options:[["A","2 vueltas"],["B","3 vueltas"],["C","6 vueltas"]], correct:"C"},
+ {id:13, tema:"ra4", text:"Motor potente y duradero, usado en lavadoras, bombas y en la industria:", code:null, options:[["A","Motor AC"],["B","Motor DC"],["D","Servomotor"]], correct:"A"},
+ {id:14, tema:"ra4", text:"Motor ideal para impresoras 3D y máquinas CNC por su posición precisa:", code:null, options:[["B","Motor hidráulico"],["C","Motor neumático"],["D","Paso a paso"]], correct:"D"},
+ {id:15, tema:"ra4", text:"Interruptor que se acciona con una corriente pequeña para controlar un circuito de mayor potencia:", code:null, options:[["A","Final de carrera"],["B","Relé"],["C","Tope"]], correct:"B"},
+ {id:16, tema:"ra4", text:"Simulador que además permite programar el sistema, como RoboDK o Factory I/O:", code:null, options:[["A","Simulador eléctrico"],["B","Monitor serie"],["C","Simulador informático"]], correct:"C"},
+ {id:17, tema:"ra5", text:"Sensor que mide la cantidad de luz:", code:null, options:[["A","PIR"],["B","Ultrasónico"],["D","LDR"]], correct:"D"},
+ {id:18, tema:"ra5", text:"El controlador no mueve los motores directamente; para eso usa:", code:null, options:[["A","Un driver de motores o un relé"],["B","Un sensor"],["C","Un monitor serie"]], correct:"A"},
+ {id:19, tema:"ra6", text:"Una aspiradora que esquiva sillas es un robot de nivel:", code:null, options:[["B","2, adaptativo"],["C","3, inteligente"],["D","4, autónomo avanzado"]], correct:"B"},
+ {id:20, tema:"ra6", text:"Un robot logra su tarea en 18 de 24 intentos. ¿Qué porcentaje de éxito tiene?", code:null, options:[["B","60 %"],["C","75 %"],["D","80 %"]], correct:"C"}
 ];
 
 const PART_RC = [
@@ -508,6 +508,7 @@ async function saveProgress(){
 }
 
 /* ---------- calificación automática ---------- */
+function suLetter(q,k){ const i=q.options.findIndex(([kk])=>kk===k); return i<0? (k||"") : "ABCDEFGH"[i]; }
 function scoreSU(answers){ let s=0; PART_SU.forEach(q=>{ if(answers[q.id]===q.correct) s++; }); return s; }
 function scoreC(answers){ let s=0; PART_C_STATEMENTS.forEach((st,idx)=>{ if(answers[idx]===st.correct) s++; }); return s; }
 function scoreRC(answers){
@@ -1197,7 +1198,7 @@ function renderDifficulty(){
 
 function renderAnswerKey(){
   const su = PART_SU.map(q=>{
-    const opts = q.options.map(([k,l])=>`<div style="${k===q.correct?'color:var(--good);font-weight:700;':''}">${k}) ${esc(l)}${k===q.correct?' ✓ correcta':''}</div>`).join("");
+    const opts = q.options.map(([k,l])=>`<div style="${k===q.correct?'color:var(--good);font-weight:700;':''}">${suLetter(q,k)}) ${esc(l)}${k===q.correct?' ✓ correcta':''}</div>`).join("");
     const codeHtml = q.code ? `<div class="code-box">${q.code.map(l=>esc(l)).join("\n")}</div>` : "";
     return `<div class="a-item"><div class="prompt">${q.id}. ${esc(q.text)}</div>${codeHtml}${opts}</div>`;
   }).join("");
@@ -1217,7 +1218,7 @@ function renderAnswerKey(){
 function renderPrintable(){
   const c = state.config;
   const su = PART_SU.map(q=>{
-    const opts = q.options.map(([k,l])=>`<div>( &nbsp;&nbsp;) ${k}) ${esc(l)}</div>`).join("");
+    const opts = q.options.map(([k,l])=>`<div>( &nbsp;&nbsp;) ${suLetter(q,k)}) ${esc(l)}</div>`).join("");
     const codeHtml = q.code ? `<div class="code-box" style="background:#111;">${q.code.map(l=>esc(l)).join("\n")}</div>` : "";
     return `<div class="print-q"><span class="qn">${q.id}.</span>${esc(q.text)}${codeHtml}<div class="print-opts">${opts}</div></div>`;
   }).join("");
@@ -1275,7 +1276,7 @@ function renderTeacherDashboard(){
     if(expanded){
       const suList = PART_SU.map(q=>{
         const given = s.answers.su[q.id]; const ok = given===q.correct;
-        return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${q.id}. respondió <strong>${given? given+") "+esc((q.options.find(([k])=>k===given)||[,""])[1]) : "—"}</strong> (correcta: ${q.correct})</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
+        return `<div class="a-item" style="display:flex;justify-content:space-between;"><span>${q.id}. respondió <strong>${given? suLetter(q,given)+") "+esc((q.options.find(([k])=>k===given)||[,""])[1]) : "—"}</strong> (correcta: ${suLetter(q,q.correct)})</span><span style="color:${ok?'var(--good)':'var(--danger)'};font-weight:600;">${ok?"✓":"✗"}</span></div>`;
       }).join("");
       const rcList = PART_RC.map(q=>{
         const arr = s.answers.rc[q.id]||[];
